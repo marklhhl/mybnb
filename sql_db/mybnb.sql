@@ -212,7 +212,7 @@ CREATE TABLE `listing` (
   `Lid` int(11) NOT NULL AUTO_INCREMENT,
   `home_type` varchar(200) NOT NULL,
   `longtitude` decimal(9,3) NOT NULL,
-  `latitude` decimal(9,3) NOT NULL,
+  `latitude` decimal(8,2) NOT NULL,
   `city` varchar(200) NOT NULL,
   `addr` varchar(200) NOT NULL,
   `postal_code` char(6) NOT NULL,
@@ -244,7 +244,7 @@ if new.wifi != 'YES' AND new.wifi != 'NO' then
 set msg = 'Constraint violated: wifi must be "YES" or "NO"';
 signal sqlstate '45000' set message_text = msg;
 end if;
-if new.longtitude < 0 or new.longtitude > 180 or new.latitude < 0 or new.latitude > 180 then
+if new.longtitude < -180 or new.longtitude > 180 or new.latitude < -90 or new.latitude > 90 then
 set msg = 'Constraint violated: invalid Geo-Coordinates';
 signal sqlstate '45000' set message_text = msg;
 end if;
@@ -329,6 +329,10 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Dumping routines for database 'mybnb'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -339,4 +343,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-21  3:53:11
+-- Dump completed on 2019-07-21 17:24:34

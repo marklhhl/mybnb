@@ -28,7 +28,7 @@ values
 
 insert into listing
 values
-	(1, 'semi-detach', 123.000000, 132.000000, 'Toronto', '123skymark dr', 'M23M23', 'Canada', 'YES', 4, 1, 1, 1, null, null),
+	(1, 'semi-detach', 123.000000, 65.000000, 'Toronto', '123skymark dr', 'M23M23', 'Canada', 'YES', 4, 1, 1, 1, null, null),
 	(2, 'condo', 13.000000, 32.000000, 'Capte', '23nordivir wy', 'M23M23', 'Iceland', 'YES', 9, 1, 1, 1, null, null),
 	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'nowhereland', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here');
 
