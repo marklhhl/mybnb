@@ -1,14 +1,10 @@
 delete from host;
 delete from renter;
 delete from listing;
-delete from comment;
+delete from renter_comment;
+delete from list_comment;
 delete from calendar;
 delete from history;
-delete from avaliability;
-delete from owned_by;
-delete from rental_history;
-delete from cmade_to_list;
-delete from cmade_to_user;
 
 insert into host 
 values 
@@ -28,60 +24,36 @@ values
 
 insert into listing
 values
-	(1, 'semi-detach', 123.000000, 132.000000, 'Toronto', '123skymark dr', 'M23M23', 'Canada', 'YES', 4, 1, 1, 1, null, null),
-	(2, 'condo', 13.000000, 32.000000, 'Capte', '23nordivir wy', 'M23M23', 'Iceland', 'YES', 9, 1, 1, 1, null, null),
-	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'nowhereland', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here');
+	(1, 'semi-detach', 123.000000, 23.000000, 'Toronto', '123skymark dr', 'M23M23', 'Canada', 'YES', 4, 1, 1, 1, null, null, 1),
+	(2, 'condo', 13.000000, 32.000000, 'Capte', '23nordivir wy', 'M23M23', 'Iceland', 'YES', 9, 1, 1, 1, null, null, 2),
+	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'nowhereland', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3);
 
-insert into comment
+
+insert into renter_comment
 values
-	(11, 1, str_to_date('may 16 2019', '%M %d %Y'), 'this guy suck', 'user'),
-	(22, 5, str_to_date('may 16 2019', '%M %d %Y'), 'very affordable place, very clean', 'list');
-
+	(11, 1, str_to_date('may 16 2019', '%M %d %Y'), 'this guy suck', 1, 10);
+    
+insert into list_comment
+values
+	(22, 5, str_to_date('may 13 2019', '%M %d %Y'), 'good', 10, 1);
+    
 insert into calendar
 values
-	(111, str_to_date('october 16 2019', '%M %d %Y'), str_to_date('october 22 2019', '%M %d %Y'), 300),
-	(222, str_to_date('october 23 2019', '%M %d %Y'), str_to_date('october 30 2019', '%M %d %Y'), 500);
+	(111, str_to_date('october 16 2019', '%M %d %Y'), str_to_date('october 22 2019', '%M %d %Y'), 300, 1),
+	(222, str_to_date('october 23 2019', '%M %d %Y'), str_to_date('october 30 2019', '%M %d %Y'), 500, 2);
 
 insert into history
 values
-	(1111, str_to_date('september 16 2019', '%M %d %Y'), str_to_date('september 22 2019', '%M %d %Y'), str_to_date('June 1 2019', '%M %d %Y'), 250, 1750, 'Pending'),
-	(2222, str_to_date('June 4 2019', '%M %d %Y'), str_to_date('June 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 1750, 'Completed'),
-	(3333, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled');
+	(1111, str_to_date('september 16 2019', '%M %d %Y'), str_to_date('september 22 2019', '%M %d %Y'), str_to_date('June 1 2019', '%M %d %Y'), 250, 1750, 'Pending', 1, 10, 1),
+	(2222, str_to_date('June 4 2019', '%M %d %Y'), str_to_date('June 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 1750, 'Completed', 2, 20, 2),
+	(3333, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 30, 3);
 
-insert into avaliability
-values
-	(1, 111),
-    (2, 222);
-    
-insert into owned_by
-values
-	(1, 1),
-    (1, 2),
-    (2, 3);
-    
-insert into rental_history
-values
-	(40, 1, 1111),
-    (50, 2, 2222),
-    (30, 5, 3333);
-    
-insert into cmade_to_list
-values
-	(2222, 20, 11);
-    
-insert into cmade_to_user
-values
-	(20, 2, 22);
 
     
 select * from listing;
 select * from renter;
 select * from host;
-select * from comment;
+select * from renter_comment;
+select * from list_comment;
 select * from calendar;
 select * from history;
-select * from avaliability;
-select * from owned_by;
-select * from rental_history;
-select * from cmade_to_list;
-select * from cmade_to_user;
