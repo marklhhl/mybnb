@@ -1,13 +1,18 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 public class bnb_main_test {
 
-	public static void main(String[] args) throws ClassNotFoundException, SQLException {
+	public static void main(String[] args) throws ClassNotFoundException, SQLException, ParseException {
 		bnb_util.getConnection();
-		System.out.println(reports.get_cities());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/mm/dd");
+		Date d = sdf.parse("2019/03/13");
+		
+		Date d2= sdf.parse("2019/05/12");
+
+		System.out.println(reports.reportBooking(true, d, d2));
+
 	}
 }

@@ -1,15 +1,34 @@
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class bnb_util {
+	//Database credentials
 	public static final String dbClassName = "com.mysql.cj.jdbc.Driver";
 	public static final String CONNECTION = "jdbc:mysql://127.0.0.1/mybnb";
 	public static final String USER = "root";
 	public static final String PASS = "";
 	public static Connection connection = null;
 	
+	public static class tuple {
+		  public final String x; 
+		  public final int y; 
+		  
+		  public tuple(String x, int y) { 
+		    this.x = x;
+		    this.y = y; 
+		  } 
+	}
+	
+	public static String date_to_string(Date date) {
+		DateFormat df = new SimpleDateFormat("yyyy-mm-dd");
+		String todayAsString = df.format(date);
+		return todayAsString;
+	}
+	
 	public static Connection getConnection() throws ClassNotFoundException {
 		Class.forName(bnb_util.dbClassName);
-		//Database credentials
 		try {
 			//Establish connection
 			connection = DriverManager.getConnection(bnb_util.CONNECTION,USER,PASS);
@@ -19,6 +38,16 @@ public class bnb_util {
 			System.err.println(e);
 		}
 		return null;
+	}
+	
+	public static boolean closeConnection() throws ClassNotFoundException {
+		try {
+			connection.close();
+			return true;
+		} catch (SQLException e) {
+			System.err.println(e);
+		}
+		return false;
 	}
 	
 	public static ResultSet execute_query(String query) throws ClassNotFoundException {

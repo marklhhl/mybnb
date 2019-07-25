@@ -150,7 +150,7 @@ public class Queries {
 		}
 		
 		if (this.date_start != null) {
-			query = query + " AND " + "(avaliable_from >=  " + this.date_start + " AND avaliable_till <=" + this.date_end + ")";
+			query = query + " AND " + "(avaliable_from >= '" + this.date_start + "' AND avaliable_till <= '" + this.date_end + "')";
 		}
 		
 		if (this.price_start != -1) {
