@@ -1,12 +1,6 @@
-//import java.sql.*;
-//import java.lang.Math;
 import java.util.*;
 
-
 public class Queries {
-//	private static final String dbClassName = "com.mysql.cj.jdbc.Driver";
-//	private static final String CONNECTION = "jdbc:mysql://127.0.0.1/mybnb";
-	
 	private double longitude;
 	private double latitude;
 	private String postal_code;
@@ -20,6 +14,7 @@ public class Queries {
 	private int parking = -1;
 	private int baths = -1;
 	private int kitchens = -1;
+	private boolean wifi = false;
 	private boolean sort_by_price = false;
 	private boolean order = true;
 	
@@ -77,6 +72,11 @@ public class Queries {
 		this.kitchens = kitchens;
 		return this;
 	}
+	
+	public Queries withWifi(boolean wifi) {
+		this.wifi = wifi;
+		return this;
+	}
 		
 	// generate haversine constraint(to determine distance between coordinates)
 	private String prepare_haversine_constraint(double logi,double lati) {
@@ -107,7 +107,7 @@ public class Queries {
 	// prepare query string
 	public String prepare_query() {
 		// join list and calendar
-		String query = "SELECT * FROM listing NATURAL JOIN (Select listing_id as Lid, avaliable_from, avaliable_till, Caid, price from calendar) c_listing;";
+		String query = "SELECT * FROM listing NATURAL JOIN (Select listing_id as Lid, avaliable_from, avaliable_till, Caid, price from calendar) c_listing";
 		String hav_constraint = null;
 		List<String> adj_postal;
 		
@@ -130,27 +130,31 @@ public class Queries {
 		
 		// with constraints... 
 		if (this.beds != -1) {
-			query = query + " AND " + "(beds =  " + Integer.toString(this.beds) + ")";
+			query = query + " AND " + "(beds >=  " + Integer.toString(this.beds) + ")";
 		}
 		
 		if (this.parking != -1) {
-			query = query + " AND " + "(parking =  " + Integer.toString(this.parking) + ")";
+			query = query + " AND " + "(parking >=  " + Integer.toString(this.parking) + ")";
 		}
 		
 		if (this.kitchens != -1) {
-			query = query + " AND " + "(kitchens =  " + Integer.toString(this.kitchens) + ")";
+			query = query + " AND " + "(kitchens >=  " + Integer.toString(this.kitchens) + ")";
 		}
 		
 		if (this.baths != -1) {
-			query = query + " AND " + "(baths =  " + Integer.toString(this.baths) + ")";
+			query = query + " AND " + "(bathrooms >=  " + Integer.toString(this.baths) + ")";
+		}
+		
+		if (this.wifi) {
+			query = query + " AND " + "(wifi = 'YES')";
 		}
 		
 		if (this.date_start != null) {
-			query = query + " AND " + "(avaliable_from =>  " + this.date_start + " AND avaliable_till =<" + this.date_end + ")";
+			query = query + " AND " + "(avaliable_from >=  " + this.date_start + " AND avaliable_till <=" + this.date_end + ")";
 		}
 		
 		if (this.price_start != -1) {
-			query = query + " AND " + "(price =>  " + this.price_start + " AND price =<" + this.price_end + ")";
+			query = query + " AND " + "(price >=  " + this.price_start + " AND price <=" + this.price_end + ")";
 		}
 		
 		// sort by...
@@ -171,46 +175,5 @@ public class Queries {
 		query = query + ";";
 		return query;
 	}
-	
-//	public static void main(String[] args) throws ClassNotFoundException {
-//		//Register JDBC driver
-//				Class.forName(dbClassName);
-//				//Database credentials
-//				final String USER = "root";
-//				final String PASS = "";
-//				System.out.println("Connecting to database...");
-//
-//
-//				try {
-//					//Establish connection
-//					Connection conn = DriverManager.getConnection(CONNECTION,USER,PASS);
-//					System.out.println("Successfully connected to 'mybnb' as user: root");
-//					Statement stmt = conn.createStatement();
-//					Queries query = new Queries(123, 23).withRadius(10);
-//					String sql = query.prepare_query();
-////				Queries query = new Queries("M2M3A6");
-////				String sql = query.prepare_query();
-//					System.out.println(sql);
-//					ResultSet rs = stmt.executeQuery(sql);
-//					
-//
-//					//STEP 5: Extract data from result set
-//					while(rs.next()){
-//						//Retrieve by column name
-//						int Lid  = rs.getInt("Lid");
-//						String addr = rs.getString("addr");
-//					
-//						//Display values
-//						System.out.print("ID: " + Lid);
-//						System.out.print(", addr: " + addr + "\n");
-//					}
-//
-//					System.out.println("Closing connection...");
-//					conn.close();
-//					System.out.println("Success!");
-//				} catch (SQLException e) {
-//					System.err.println(e);
-//				}
-//	}
 
 }
