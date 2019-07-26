@@ -7,17 +7,17 @@ public class bnb_util {
 	//Database credentials
 	public static final String dbClassName = "com.mysql.cj.jdbc.Driver";
 	public static final String CONNECTION = "jdbc:mysql://127.0.0.1/mybnb";
-	public static final String USER = "root";
-	public static final String PASS = "";
+	private static final String USER = "root";
+	private static final String PASS = "";
 	public static Connection connection = null;
 	
 	public static class tuple {
-		  public final String x; 
-		  public final int y; 
+		  public static String x; 
+		  public static int y; 
 		  
 		  public tuple(String x, int y) { 
-		    this.x = x;
-		    this.y = y; 
+		    tuple.x = x;
+		    tuple.y = y; 
 		  } 
 	}
 	
@@ -57,7 +57,7 @@ public class bnb_util {
 		try {
 			//Establish connection
 			Statement stmt = connection.createStatement();
-			System.out.println(query);
+			// System.out.println(query);
 			rs = stmt.executeQuery(query);
 		} catch (SQLException e) {
 			System.err.println(e);
