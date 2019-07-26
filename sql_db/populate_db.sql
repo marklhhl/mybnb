@@ -14,9 +14,9 @@ values
 	(5,'923 notaname ko', 'Japan', 'Toyko', 'M431FS', str_to_date('august 10 1970', '%M %d %Y'), 653213612, 'Joe', 'Bettrige',null, 'salary man', 1555165125523333, 155516512552333, 'someemail5@hotmail.com', '123');
 
 insert into listing
-values
+value
 	(1, 'semi-detach', 123.000000, 23.000000, 'Toronto', '123skymark dr', 'M2MM23', 'Canada', 'YES', 4, 1, 1, 1, null, null, 1),
-	(2, 'condo', 121.000000, 23.000000, 'Toronto', '23nordivir wy', 'M3MM23', 'Canada', 'YES', 9, 1, 1, 1, null, null, 2),
+	(2, 'condo', 121.000000, 23.000000, 'Toronto', '23nordivir wy', 'M3MM23', 'Canada', 'YES', 9, 1, 1, 1, null, null, 1),
 	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'Canada', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3);
 
 
@@ -36,7 +36,7 @@ values
 insert into history
 values
 	(1111, str_to_date('september 16 2019', '%M %d %Y'), str_to_date('september 22 2019', '%M %d %Y'), str_to_date('June 1 2019', '%M %d %Y'), 250, 1750, 'Pending', 1, 5, 2),
-	(2222, str_to_date('June 4 2019', '%M %d %Y'), str_to_date('June 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 1750, 'Completed', 1, 5, 2),
+	(2222, str_to_date('June 4 2019', '%M %d %Y'), str_to_date('June 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 1750, 'Completed', 1, 5, 1),
 	(3333, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 4, 3);
 
 
