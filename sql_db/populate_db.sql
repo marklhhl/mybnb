@@ -16,8 +16,9 @@ values
 insert into listing
 value
 	(1, 'semi-detach', 123.000000, 23.000000, 'Toronto', '123skymark dr', 'M2MM23', 'Canada', 'YES', 4, 1, 1, 1, null, null, 1),
-	(2, 'condo', 121.000000, 23.000000, 'Toronto', '23nordivir wy', 'M3MM23', 'Canada', 'YES', 9, 1, 1, 1, null, null, 1),
-	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'Canada', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3);
+	(2, 'condo', 121.000000, 23.000000, 'Toronto', '23nordivir wy', 'M3MM23', 'Canada', 'YES', 9, 1, 1, 1, null, null, 3),
+	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'Canada', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3),
+	(4, 'box', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'USA', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3);
 
 
 insert into renter_comment
@@ -36,10 +37,10 @@ values
 insert into history
 values
 	(1111, str_to_date('september 16 2019', '%M %d %Y'), str_to_date('september 22 2019', '%M %d %Y'), str_to_date('June 1 2019', '%M %d %Y'), 250, 1750, 'Pending', 1, 5, 2),
-	(2222, str_to_date('June 4 2019', '%M %d %Y'), str_to_date('June 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 1750, 'Completed', 1, 5, 1),
-	(3333, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 4, 3);
-
-
+	(2222, str_to_date('June 4 2019', '%M %d %Y'), str_to_date('June 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 1750, 'Completed', 3, 4, 3),
+	(3333, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 4, 3),
+	(4444, str_to_date('september 23 2019', '%M %d %Y'), str_to_date('september 24 2019', '%M %d %Y'), str_to_date('June 2 2019', '%M %d %Y'), 250, 1750, 'Pending', 1, 5, 2),
+	(5555, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 4, 3);
     
 select * from listing;
 select * from user;

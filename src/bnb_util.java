@@ -1,7 +1,9 @@
 import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class bnb_util {
 	//Database credentials
@@ -63,6 +65,25 @@ public class bnb_util {
 			System.err.println(e);
 		}
 		return rs;
+	}
+	
+	// get adjacent postal codes
+	public static List<String> get_adj(String postal_code) {
+		String regionCode = postal_code.substring(0,3);
+		int adj_num = Integer.parseInt(postal_code.substring(1,2));
+		List<String> result = new ArrayList<String>();
+		result.add(regionCode);
+		if (adj_num == 9) {
+			adj_num = 8;
+			result.add(regionCode.substring(0,1) + Integer.toString(adj_num) + regionCode.substring(3,3));
+		} else if (adj_num == 1) {
+			adj_num = 2;
+			result.add(regionCode.substring(0,1) + Integer.toString(adj_num) + regionCode.substring(3,3));
+		} else {
+			result.add(regionCode.substring(0,1) + Integer.toString(adj_num + 1) + regionCode.substring(2));
+			result.add(regionCode.substring(0,1) + Integer.toString(adj_num - 1) + regionCode.substring(2));
+		}
+		return result;
 	}
 }
 

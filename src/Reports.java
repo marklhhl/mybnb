@@ -2,7 +2,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-public class reports {
+public class Reports {
 
 	private static List<String> get_countries() throws ClassNotFoundException, SQLException {
 		String query = "SELECT DISTINCT country FROM listing;";
@@ -14,7 +14,7 @@ public class reports {
 		}
 		return country;
 	}
-	
+
 	private static List<String> get_cities(String country) throws ClassNotFoundException, SQLException {
 		String query = "SELECT DISTINCT city FROM listing";
 		if (country != "all") {
@@ -41,12 +41,31 @@ public class reports {
 		return postal_codes;
 	}
 	
+	public static List<List<Integer>> rankCancel() throws ClassNotFoundException, SQLException {
+		String renter_query = "select Uid, count(*) total_can from (select * from (history h inner join user u on u.uid = h.renter_id) where status = 'canceled') as rental_history group by Uid Desc;";
+		String host_query = "select Uid, count(*) total_can from (select * from (history h inner join user u on u.uid = h.host_id) where status = 'canceled') as rental_history group by Uid Desc;";
+		ResultSet canceled_renter = bnb_util.execute_query(renter_query);
+		ResultSet canceled_host = bnb_util.execute_query(host_query);
+		List<Integer> cr = new ArrayList<Integer>();
+		List<Integer> ch = new ArrayList<Integer>();
+		while(canceled_renter.next()) {
+			cr.add(canceled_renter.getInt("Uid"));
+		}
+		while(canceled_host.next()) {
+			ch.add(canceled_host.getInt("Uid"));
+		}
+		List<List<Integer>> result = new ArrayList<List<Integer>>();
+		result.add(cr);
+		result.add(ch);
+		return result;
+	}
+	
 	public static Map<String, List<Integer>> rankRenter(boolean by_city, Date date_start, Date date_end) throws ClassNotFoundException, SQLException {
 		String sDate_start = bnb_util.date_to_string(date_start);
 		String sDate_end = bnb_util.date_to_string(date_end);
 		Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
 		if (by_city) {
-			List<String> cities = reports.get_cities("all");
+			List<String> cities = Reports.get_cities("all");
 			for (String city : cities) {
 				String query = "select Uid from (select Uid, count(*) total from (Select * from (user u inner join history h on u.Uid = h.renter_id inner join (select Lid, city as lcity from listing) s on h.list_id = s.Lid)"
 								+ " where (transaction_date between '" + sDate_start + "' AND '" + sDate_end + "') AND lcity = '" + city + "') as renter_hist Group by Uid) as renter_book_count where total > 1;";
@@ -96,10 +115,10 @@ public class reports {
 	
 	public static Map<String, List<List<Integer>>> rankHost(boolean by_city) throws ClassNotFoundException, SQLException {
 		Map<String, List<List<Integer>>> result = new HashMap<String, List<List<Integer>>>();
-		List<String> countries = reports.get_countries();
+		List<String> countries = Reports.get_countries();
 		for (String country : countries) {
 			if (by_city) {
-				List<String> cities = reports.get_cities(country);
+				List<String> cities = Reports.get_cities(country);
 				for (String city : cities) {
 					String query = "Select Uid, count(*) totalCount From (Select * from (user u inner join (select Lid, host_id, country as lcountry, city as lcity from listing) l on u.Uid = l.host_id) where "
 							+ "lcountry = '" + country + "' AND lcity = '" + city + "') as user_listing group by Uid Desc;";
@@ -133,13 +152,13 @@ public class reports {
 	
 	public static Map<String, String> reportListing(boolean by_city, boolean by_postalCity) throws ClassNotFoundException, SQLException {
 		Map<String, String> result = new HashMap<String, String>();
-		List<String> countries = reports.get_countries();
+		List<String> countries = Reports.get_countries();
 		for (String country : countries) {
 			if (by_city || by_postalCity) {
-				List<String> cities = reports.get_cities(country);
+				List<String> cities = Reports.get_cities(country);
 				for (String city : cities) {
 					if (by_postalCity) {
-						List<String> postals = reports.get_postal(city);
+						List<String> postals = Reports.get_postal(city);
 						for (String postal : postals) {
 							String query = "SELECT count(*) FROM listing WHERE (country = '" + country + "') AND (city = '" + city + "') AND (postal_code = '" + postal + "');";
 							ResultSet rs = bnb_util.execute_query(query);
@@ -171,11 +190,11 @@ public class reports {
 		String sDate_start = bnb_util.date_to_string(date_start);
 		String sDate_end = bnb_util.date_to_string(date_end);
 
-		List<String> cities = reports.get_cities("all");
+		List<String> cities = Reports.get_cities("all");
 		Map<String, String> result = new HashMap<String, String>();
 		for (String city : cities) {
 			if (by_postal) {
-				List<String> postals = reports.get_postal(city);
+				List<String> postals = Reports.get_postal(city);
 				for (String postal : postals) {
 					String query = "SELECT count(*) FROM (history h join listing l on h.list_id = l.Lid) WHERE (city = '" + city + "') " + "AND (transaction_date >= '" + sDate_start + "') AND (transaction_date <= '" + sDate_end + "')";
 					query = query + " AND (postal_code = '" + postal + "')" + ";";

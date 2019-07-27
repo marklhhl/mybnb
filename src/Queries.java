@@ -17,11 +17,12 @@ public class Queries {
 	private boolean wifi = false;
 	private boolean sort_by_price = false;
 	private boolean order = true;
+	private boolean ic_partial_overlap = false;
 	
 	public Queries(String postal_code) {
 		this.postal_code = postal_code;
 	}
-	
+
 	public Queries(double longitude, double latitude) {
 		this.longitude = longitude;
 		this.latitude = latitude;
@@ -47,9 +48,9 @@ public class Queries {
 		return this;
 	}
 	
-	public Queries withDateRange(String date_start, String date_end) {
-		this.date_start = date_start;
-		this.date_end = date_end;
+	public Queries withDateRange(Date date_start, Date date_end, boolean ic_partial_overlap) {
+		this.date_start = bnb_util.date_to_string(date_start);
+		this.date_end = bnb_util.date_to_string(date_end);
 		return this;
 	}
 	
@@ -84,25 +85,6 @@ public class Queries {
 							+ "))*power(sin(radians(" + Double.toString(logi) + "-longitude)/2), 2)))";
 		return constraint;
 	}
-	
-	// get adjacent postal codes
-	private List<String> get_adj(String postal_code) {
-		String regionCode = postal_code.substring(0,3);
-		int adj_num = Integer.parseInt(postal_code.substring(1,2));
-		List<String> result = new ArrayList<String>();
-		result.add(regionCode);
-		if (adj_num == 9) {
-			adj_num = 8;
-			result.add(regionCode.substring(0,1) + Integer.toString(adj_num) + regionCode.substring(3,3));
-		} else if (adj_num == 1) {
-			adj_num = 2;
-			result.add(regionCode.substring(0,1) + Integer.toString(adj_num) + regionCode.substring(3,3));
-		} else {
-			result.add(regionCode.substring(0,1) + Integer.toString(adj_num + 1) + regionCode.substring(2));
-			result.add(regionCode.substring(0,1) + Integer.toString(adj_num - 1) + regionCode.substring(2));
-		}
-		return result;
-	}
 
 	// prepare query string
 	public String prepare_query() {
@@ -121,7 +103,7 @@ public class Queries {
 			query = query + " where (" + hav_constraint + " < " + this.radius + ")";
 		}
 		else if (this.postal_code != null) {
-			adj_postal = this.get_adj(this.postal_code);
+			adj_postal = bnb_util.get_adj(this.postal_code);
 			query = query + " where (left(postal_code, 3) = '" + adj_postal.get(0) + "' OR left(postal_code, 3) = '" + adj_postal.get(1) + "'";
 			if (adj_postal.size() == 3) {
 				query = query + " OR left(postal_code, 3) = '" + adj_postal.get(2) + "')";
@@ -150,7 +132,12 @@ public class Queries {
 		}
 		
 		if (this.date_start != null) {
-			query = query + " AND " + "(avaliable_from >= '" + this.date_start + "' AND avaliable_till <= '" + this.date_end + "')";
+			query = query + " AND " + "((avaliable_from <= '" + this.date_start + "' AND avaliable_till >= '" + this.date_end + "')";
+			if (ic_partial_overlap) {
+				query = query + " OR (avaliable_from <= '" + this.date_start + "' AND avaliable_till >= '" + this.date_start + "' AND avaliable_till <= '" + this.date_end + "')"
+							  + " OR (avaliable_from >= '" + this.date_start + "' AND avaliable_from <= '" + this.date_end + "' AND avaliable_till >= '" + this.date_end + "')";
+			}
+			query = query + ")";
 		}
 		
 		if (this.price_start != -1) {
@@ -158,17 +145,32 @@ public class Queries {
 		}
 		
 		// sort by...
+		boolean not_first = false;
 		if ((this.longitude != 0) && (this.latitude != 0)) {
 			query = query + " order by " + hav_constraint + " ASC";
+			not_first = true;
 		}
+		
+		if (ic_partial_overlap) {
+			if (not_first) {
+				query = query + ", Lid";
+			} else {
+				query = query + " order by Lid";
+			}
+			not_first = true;
+		}
+		
 		if (this.sort_by_price) {
-			query = query + ", " + "price ";
+			if (not_first) {
+				query = query + ", price ";
+			} else {
+				query = query + " order by price ";
+			}
 			if (this.order) {
 				 query = query + "ASC";
 			} else {
 				 query = query + "DESC";
 			}
-			
 		}
 		
 		// end statement
