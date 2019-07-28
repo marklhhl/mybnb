@@ -2,6 +2,7 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
+
 public class Reports {
 
 	private static List<String> get_countries() throws ClassNotFoundException, SQLException {
@@ -40,6 +41,16 @@ public class Reports {
 		}
 		return postal_codes;
 	}
+	
+//	public static void wordCloud() {
+//		String words = "good game, green tree, old man";
+//	    InputStream is = new FileInputStream("en-parser-chunking.bin");
+//	    ParserModel model = new ParserModel(is);
+//	    Parser parser = ParserFactory.create(model);
+//	    Parse topParses[] = ParserTool.parseLine(line, parser, 1);
+//	        for (Parse p : topParses){
+//	                 p.show();}
+//	}
 	
 	public static List<List<Integer>> rankCancel() throws ClassNotFoundException, SQLException {
 		String renter_query = "select Uid, count(*) total_can from (select * from (history h inner join user u on u.uid = h.renter_id) where status = 'canceled') as rental_history group by Uid Desc;";

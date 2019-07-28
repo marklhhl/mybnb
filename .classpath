@@ -7,5 +7,13 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/micha/Downloads/mysql-connector-java-8.0.16/mysql-connector-java-8.0.16.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex-3.9.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex-3.9.2-javadoc.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex-3.9.2-sources.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-brat-annotator-1.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-morfologik-addon-1.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-tools-1.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-uima-1.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

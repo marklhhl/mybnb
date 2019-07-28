@@ -53,6 +53,7 @@ public class bnb_util {
 	}
 	
 	public static ResultSet execute_query(String query) throws ClassNotFoundException {
+		System.out.println(query);
 		Class.forName(bnb_util.dbClassName);
 		//Database credentials
 		ResultSet rs = null;

@@ -7,18 +7,18 @@ delete from history;
 
 insert into user
 values
-	(1,'531 george st', 'Canada', 'Toronto', 'M43J21', str_to_date('august 10 1994', '%M %d %Y'), 232133333, 'james', 'charles','eva', 'writer', 1555165125523333, 155516512552333, 'someemail@hotmail.com', '123'),
+	(1,'531 george st', 'Canada', 'Toronto', 'M2M3A6', str_to_date('august 10 1994', '%M %d %Y'), 232133333, 'james', 'charles','eva', 'writer', 1555165125523333, 155516512552333, 'someemail@hotmail.com', '123'),
 	(2,'23 mintwood drive', 'Canada', 'Toronto', 'M2M3A6', str_to_date('december 16 1998', '%M %d %Y'), 321542111, 'michael', 'chen',null, 'computer science', 1555165125523333, 155516512552333, 'someemail2@hotmail.com', '123'),
-	(3,'52 church st', 'Usa', 'New York', 'SF3 4F', str_to_date('august 10 1994', '%M %d %Y'), 653246123, 'john', 'mcnugget',null, 'donut eater', 1555165125523333, 155516512552333, 'someemail3@hotmail.com', '123'),
-	(4,'1324 st george st', 'Canada', 'Toronto', 'MJ2AF6', str_to_date('september 10 1990', '%M %d %Y'), 644257123, 'some', 'guy',null, 'cscb07 torturer', 1555165125523333, 155516512552333, 'someemail4@hotmail.com', '123'),
-	(5,'923 notaname ko', 'Japan', 'Toyko', 'M431FS', str_to_date('august 10 1970', '%M %d %Y'), 653213612, 'Joe', 'Bettrige',null, 'salary man', 1555165125523333, 155516512552333, 'someemail5@hotmail.com', '123');
+	(3,'52 church st', 'Usa', 'New York', 'M2M3A6', str_to_date('august 10 1994', '%M %d %Y'), 653246123, 'john', 'mcnugget',null, 'donut eater', 1555165125523333, 155516512552333, 'someemail3@hotmail.com', '123'),
+	(4,'1324 st george st', 'Canada', 'Toronto', 'M2M3A6', str_to_date('september 10 1990', '%M %d %Y'), 644257123, 'some', 'guy',null, 'cscb07 torturer', 1555165125523333, 155516512552333, 'someemail4@hotmail.com', '123'),
+	(5,'923 notaname ko', 'Japan', 'Toyko', 'M2M3A6', str_to_date('august 10 1970', '%M %d %Y'), 653213612, 'Joe', 'Bettrige',null, 'salary man', 1555165125523333, 155516512552333, 'someemail5@hotmail.com', '123');
 
 insert into listing
 value
-	(1, 'semi-detach', 123.000000, 23.000000, 'Toronto', '123skymark dr', 'M2MM23', 'Canada', 'YES', 4, 1, 1, 1, null, null, 1),
-	(2, 'condo', 121.000000, 23.000000, 'Toronto', '23nordivir wy', 'M3MM23', 'Canada', 'YES', 9, 1, 1, 1, null, null, 3),
-	(3, 'cave', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'Canada', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3),
-	(4, 'box', 1.000000, 2.000000, 'middleof', 'nowhere', 'AAAAAA', 'USA', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3);
+	(1, 'house', 123.000000, 23.000000, 'Toronto', '123skymark dr', 'M2M3A6', 'Canada', 'YES', 4, 1, 1, 1, null, null, 1),
+	(2, 'house', 121.000000, 23.000000, 'Toronto', '23nordivir wy', 'M2M3A6', 'Canada', 'YES', 9, 1, 1, 1, null, null, 3),
+	(3, 'house', 1.000000, 2.000000, 'middleof', 'nowhere', 'M2M3A6', 'Canada', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3),
+	(4, 'house', 1.000000, 2.000000, 'middleof', 'nowhere', 'M2M3A6', 'USA', 'YES', 2, 1, 1, 1, 'free breakfast', 'why did you come here', 3);
 
 
 insert into renter_comment
@@ -32,7 +32,9 @@ values
 insert into calendar
 values
 	(111, str_to_date('october 16 2019', '%M %d %Y'), str_to_date('october 22 2019', '%M %d %Y'), 300, 1),
-	(222, str_to_date('october 23 2019', '%M %d %Y'), str_to_date('october 30 2019', '%M %d %Y'), 500, 2);
+	(222, str_to_date('october 23 2019', '%M %d %Y'), str_to_date('october 30 2019', '%M %d %Y'), 500, 2),
+    	(333, str_to_date('october 17 2019', '%M %d %Y'), str_to_date('december 30 2019', '%M %d %Y'), 500, 3);
+
 
 insert into history
 values
@@ -41,7 +43,6 @@ values
 	(3333, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 4, 3),
 	(4444, str_to_date('september 23 2019', '%M %d %Y'), str_to_date('september 24 2019', '%M %d %Y'), str_to_date('June 2 2019', '%M %d %Y'), 250, 1750, 'Pending', 1, 5, 2),
 	(5555, str_to_date('august 9 2019', '%M %d %Y'), str_to_date('august 12 2019', '%M %d %Y'), str_to_date('april 1 2019', '%M %d %Y'), 250, 750, 'Canceled', 3, 4, 3);
-    
 select * from listing;
 select * from user;
 select * from renter_comment;

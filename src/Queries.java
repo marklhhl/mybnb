@@ -51,6 +51,7 @@ public class Queries {
 	public Queries withDateRange(Date date_start, Date date_end, boolean ic_partial_overlap) {
 		this.date_start = bnb_util.date_to_string(date_start);
 		this.date_end = bnb_util.date_to_string(date_end);
+		this.ic_partial_overlap = true;
 		return this;
 	}
 	
@@ -132,7 +133,7 @@ public class Queries {
 		}
 		
 		if (this.date_start != null) {
-			query = query + " AND " + "((avaliable_from <= '" + this.date_start + "' AND avaliable_till >= '" + this.date_end + "')";
+			query = query + " AND " + "((avaliable_from >= '" + this.date_start + "' AND avaliable_till <= '" + this.date_end + "')";
 			if (ic_partial_overlap) {
 				query = query + " OR (avaliable_from <= '" + this.date_start + "' AND avaliable_till >= '" + this.date_start + "' AND avaliable_till <= '" + this.date_end + "')"
 							  + " OR (avaliable_from >= '" + this.date_start + "' AND avaliable_from <= '" + this.date_end + "' AND avaliable_till >= '" + this.date_end + "')";

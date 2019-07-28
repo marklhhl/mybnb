@@ -2,7 +2,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
-public class toolkit {
+public class Toolkit {
 	
 	// want to suggest based on listing postal code, and number of beds, and date range
 	public static double suggest_price(String postal, int people, Date date_start, Date date_end) throws ClassNotFoundException, SQLException {
