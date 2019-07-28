@@ -7,13 +7,10 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/micha/Downloads/mysql-connector-java-8.0.16/mysql-connector-java-8.0.16.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex-3.9.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex-3.9.2-javadoc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Documents/stanford-tregex-2018-10-16/stanford-tregex-3.9.2-sources.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-brat-annotator-1.9.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-morfologik-addon-1.9.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-tools-1.9.1.jar"/>
-	<classpathentry kind="lib" path="C:/Users/micha/Downloads/apache-opennlp-1.9.1/lib/opennlp-uima-1.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/CoreNLP/stanford-corenlp-3.9.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/CoreNLP/stanford-corenlp-3.9.1-models.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/slf4j-api-1.7.5/slf4j-api-1.7.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/slf4j-log4j12-1.7.5/slf4j-log4j12-1.7.5.jar"/>
+	<classpathentry kind="lib" path="C:/Users/micha/Documents/log4j-1.2.17/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

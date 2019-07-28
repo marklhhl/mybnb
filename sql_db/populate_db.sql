@@ -27,11 +27,20 @@ values
     
 insert into list_comment
 values
-	(22, 5, str_to_date('may 13 2019', '%M %d %Y'), 'good', 5, 1);
+	(22, 5, str_to_date('may 13 2019', '%M %d %Y'), 'very yellow house', 5, 1),
+	(33, 5, str_to_date('may 13 2019', '%M %d %Y'), 'very yellow house', 5, 1),
+    	(66, 5, str_to_date('may 13 2019', '%M %d %Y'), 'very yellow house', 5, 1),
+    	(44, 5, str_to_date('may 13 2019', '%M %d %Y'), 'very clean house', 5, 1),
+            	(55, 5, str_to_date('may 13 2019', '%M %d %Y'), 'very clean house', 5, 1),
+                	(77, 5, str_to_date('may 13 2019', '%M %d %Y'), 'cool house', 5, 1);
+
+
+
+
     
 insert into calendar
 values
-	(111, str_to_date('october 16 2019', '%M %d %Y'), str_to_date('october 22 2019', '%M %d %Y'), 300, 1),
+	(111, str_to_date('may 16 2019', '%M %d %Y'), str_to_date('may 22 2019', '%M %d %Y'), 300, 1),
 	(222, str_to_date('october 23 2019', '%M %d %Y'), str_to_date('october 30 2019', '%M %d %Y'), 500, 2),
     	(333, str_to_date('october 17 2019', '%M %d %Y'), str_to_date('december 30 2019', '%M %d %Y'), 500, 3);
 
