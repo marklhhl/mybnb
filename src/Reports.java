@@ -29,6 +29,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 public class Reports {
 
+	// get all countries
 	private static List<String> get_countries() throws ClassNotFoundException, SQLException {
 		String query = "SELECT DISTINCT country FROM listing;";
 		List<String> country = new ArrayList<String>();
@@ -40,6 +41,7 @@ public class Reports {
 		return country;
 	}
 
+	// get all cities by country or all, asumming city names are unique between countries
 	private static List<String> get_cities(String country) throws ClassNotFoundException, SQLException {
 		String query = "SELECT DISTINCT city FROM listing";
 		if (country != "all") {
@@ -55,6 +57,7 @@ public class Reports {
 		return cities;
 	}
 	
+	// get all postal codes by city
 	private static List<String> get_postal(String city) throws ClassNotFoundException, SQLException {
 		String query = "SELECT DISTINCT postal_code FROM listing WHERE city = '" + city + "';";
 		List<String> postal_codes = new ArrayList<String>();
@@ -66,6 +69,7 @@ public class Reports {
 		return postal_codes;
 	}
 	
+	// get all listings
 	private static List<Integer> get_listing() throws ClassNotFoundException, SQLException {
 		String query = "SELECT DISTINCT Lid FROM listing;";
 		List<Integer> Lids = new ArrayList<Integer>();
@@ -75,7 +79,9 @@ public class Reports {
 			Lids.add(rs.getInt("Lid"));
 		}
 		return Lids;
-	}	
+	}
+	
+	// check if current tree is a PP 
 	private static boolean notPRP (Tree tree) {
 		  for (Tree subtree : tree) {
 			  if (subtree.label().value().contentEquals("PRP")) {
@@ -203,9 +209,30 @@ public class Reports {
 	}
 	
 	public static Map<String, List<Integer>> identifyCommercialHost() throws ClassNotFoundException, SQLException {
-		Map<String, List<List<Integer>>> host_listing_count = rankHost(true);
+		Map<String, List<List<Integer>>> host_listing_count_cc = rankHost(true);
+		Map<String, List<List<Integer>>> host_listing_count_c = rankHost(false);
+
 		Map<String, List<Integer>> result = new HashMap<String, List<Integer>>();
-		for (String key : host_listing_count.keySet()) {
+		
+		for (String key : host_listing_count_c.keySet()) {
+			String query = "Select sum(listingCount) totalList from (select Uid, count(*) listingCount From (Select * from (user u inner join (select Lid, host_id, country as lcountry, city as lcity from listing) l on u.Uid = l.host_id) where "
+					+ "lcountry = '" + key + "') as user_listing GROUP BY Uid Desc) as user_listing_total";
+			ResultSet rs = bnb_util.execute_query(query);
+			int total_listings = 0;
+			while(rs.next()) {
+				total_listings = rs.getInt("totalList");
+				System.out.println(rs.getInt("totalList"));
+			}
+			List<Integer> flagged_hosts = new ArrayList<Integer>();
+		    for (List<Integer> host: host_listing_count_c.get(key)) {
+		    	if (host.get(1) > Math.floor(total_listings*0.1)) {
+		    		flagged_hosts.add(host.get(0));
+		    	}
+		    }
+		    result.put(key, flagged_hosts);
+		}
+		
+		for (String key : host_listing_count_cc.keySet()) {
 			String[] parts = key.split(" ");
 			String query = "Select sum(listingCount) totalList from (select Uid, count(*) listingCount From (Select * from (user u inner join (select Lid, host_id, country as lcountry, city as lcity from listing) l on u.Uid = l.host_id) where "
 					+ "lcountry = '" + parts[0] + "' AND lcity = '" + parts[1] + "') as user_listing GROUP BY Uid Desc) as user_listing_total";
@@ -215,7 +242,7 @@ public class Reports {
 				total_listings = rs.getInt("totalList");
 			}
 			List<Integer> flagged_hosts = new ArrayList<Integer>();
-		    for (List<Integer> host: host_listing_count.get(key)) {
+		    for (List<Integer> host: host_listing_count_cc.get(key)) {
 		    	if (host.get(1) > Math.floor(total_listings*0.1)) {
 		    		flagged_hosts.add(host.get(0));
 		    	}
