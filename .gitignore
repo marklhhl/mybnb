@@ -1,3 +1,8 @@
 .metadata/
+<<<<<<< HEAD
 /.bin
 /.classpath
+=======
+.bin/
+.classpath
+>>>>>>> mark
