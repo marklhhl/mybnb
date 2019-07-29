@@ -8,12 +8,9 @@ import java.text.SimpleDateFormat;
 public class bnb_main_test {
 
 	public static void main(String[] args) throws ClassNotFoundException, SQLException, ParseException {
-		try {
-			bnb_util.getConnection();
-
-			System.out.println(Reports.identifyCommercialHost());
-		} catch (SQLException e) { 
-			System.out.println(e);
-		}
+		bnb_util.getConnection();
+		System.out.println(Reports.identifyCommercialHost());
+	
+		System.out.println(Reports.wordCloud());
 	}
 }

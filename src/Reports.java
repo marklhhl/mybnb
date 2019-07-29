@@ -241,7 +241,6 @@ public class Reports {
 			int total_listings = 0;
 			while(rs.next()) {
 				total_listings = rs.getInt("totalList");
-				System.out.println(rs.getInt("totalList"));
 			}
 			List<Integer> flagged_hosts = new ArrayList<Integer>();
 		    for (List<Integer> host: host_listing_count_c.get(key)) {
@@ -258,7 +257,11 @@ public class Reports {
 					+ "(Select * from (user u inner join (select Lid, host_id, country as lcountry, city as lcity from listing) l on u.Uid = l.host_id) where "
 					+ "lcountry = '" + parts[0] + "' AND lcity = '" + parts[1] + "') as user_listing GROUP BY Uid Desc) as user_listing_total";
 			ResultSet rs = bnb_util.execute_query(query);
-			int total_listings = rs.getInt("totalList");
+			int total_listings = 0;
+			while(rs.next()) {
+				total_listings = rs.getInt("totalList");
+
+			}
 			
 			// iterate through each host to identify which host have more than 10 percent of the total number of listings
 			List<Integer> flagged_hosts = new ArrayList<Integer>();
