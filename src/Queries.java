@@ -32,6 +32,7 @@ public class Queries {
 		this.address = address;
 	}
 		
+	// instantiate object with optional parameters
 	public Queries withRadius(int radius) {
 		this.radius = radius;
 		return this;

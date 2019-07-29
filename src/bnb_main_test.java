@@ -21,6 +21,6 @@ public class bnb_main_test {
 //			System.out.println(rs.getInt("Lid"));
 //		}
 		//System.out.println(Reports.parseNP("the owner had provided a very clean house"));
-		System.out.println(Reports.wordCloud());
+		System.out.println(Reports.identifyCommercialHost());
 	}
 }
