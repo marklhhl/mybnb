@@ -21,6 +21,10 @@ public class bnb_main_test {
 //			System.out.println(rs.getInt("Lid"));
 //		}
 		//System.out.println(Reports.parseNP("the owner had provided a very clean house"));
-		System.out.println(Reports.identifyCommercialHost());
+		ResultSet rs = bnb_util.execute_query(new Queries("123skymark dr", true).prepare_query());
+		while(rs.next()) {
+	    System.out.println(rs.getInt("Lid"));
+		}
+
 	}
 }

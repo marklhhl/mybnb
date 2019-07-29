@@ -40,6 +40,7 @@ public class Queries {
 	
 	public Queries withSortPrice(boolean sortPrice, boolean asc_desc) {
 		this.sort_by_price = sortPrice;
+		this.order = asc_desc;
 		return this;
 	}
 
@@ -49,9 +50,9 @@ public class Queries {
 		return this;
 	}
 	
-	public Queries withDateRange(Date date_start, Date date_end, boolean ic_partial_overlap) {
-		this.date_start = bnb_util.date_to_string(date_start);
-		this.date_end = bnb_util.date_to_string(date_end);
+	public Queries withDateRange(String date_start, String date_end, boolean ic_partial_overlap) {
+		this.date_start = date_start;
+		this.date_end = date_end;
 		this.ic_partial_overlap = true;
 		return this;
 	}
@@ -97,7 +98,7 @@ public class Queries {
 		
 		// search location by ...
 		if ((this.address != null)) {
-			query = " where addr = " + this.address;
+			query = query + " where addr = '" + this.address + "'";
 			return query + ";";
 		}
 		else if ((this.longitude != 0) && (this.latitude != 0)) {

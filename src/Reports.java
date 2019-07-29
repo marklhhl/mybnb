@@ -2,29 +2,29 @@ import java.sql.*;
 import java.util.*;
 import java.util.Date;
 
-import org.apache.log4j.BasicConfigurator;
+//import org.apache.log4j.BasicConfigurator;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import org.apache.log4j.BasicConfigurator;
-import edu.stanford.nlp.coref.CorefCoreAnnotations.CorefChainAnnotation;
-import edu.stanford.nlp.coref.data.CorefChain;
-import edu.stanford.nlp.ling.CoreLabel;
-import edu.stanford.nlp.ling.Word;
-import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedDependenciesAnnotation;
-import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
-import edu.stanford.nlp.util.CoreMap;
+//import org.apache.log4j.BasicConfigurator;
+//import edu.stanford.nlp.coref.CorefCoreAnnotations.CorefChainAnnotation;
+//import edu.stanford.nlp.coref.data.CorefChain;
+//import edu.stanford.nlp.ling.CoreLabel;
+//import edu.stanford.nlp.ling.Word;
+//import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
+//import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
+//import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
+//import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
+//import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+//import edu.stanford.nlp.pipeline.Annotation;
+//import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+//import edu.stanford.nlp.semgraph.SemanticGraph;
+//import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedDependenciesAnnotation;
+//import edu.stanford.nlp.trees.Tree;
+//import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
+//import edu.stanford.nlp.util.CoreMap;
 
 
 public class Reports {
@@ -81,83 +81,83 @@ public class Reports {
 		return Lids;
 	}
 	
-	// check if current tree is a PP 
-	private static boolean notPRP (Tree tree) {
-		  for (Tree subtree : tree) {
-			  if (subtree.label().value().contentEquals("PRP")) {
-				  return false;
-			  }
-		  }
-		  return true;
-	  }
+//	// check if current tree is a PP 
+//	private static boolean notPRP (Tree tree) {
+//		  for (Tree subtree : tree) {
+//			  if (subtree.label().value().contentEquals("PRP")) {
+//				  return false;
+//			  }
+//		  }
+//		  return true;
+//	  }
+//	
+//	private static List<String> parseNP(String comment) {
+//		 // initialize the log4j system
+//	    BasicConfigurator.configure(); 
+//	     
+//	    // creates a StanfordCoreNLP object, with POS tagging, lemmatization,
+//	    Properties props = new Properties();
+//
+//	    // in the actual application, you would only load the annotators that you need
+//	    props.setProperty("annotators", "tokenize, ssplit, pos, parse");
+//	    
+//	    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+//
+//	    // create an empty Annotation just with the given text
+//	    Annotation document = new Annotation(comment);
+//
+//	    // run all Annotators on this text
+//	    pipeline.annotate(document);
+//	    
+//	    // these are all the sentences in this document
+//	    List<CoreMap> sentences = document.get(SentencesAnnotation.class);
+//	    
+//
+//	    List<String> nps = new ArrayList<String>();
+//	    // for every sentence, get the annotations
+//	    for (CoreMap sentence : sentences) {
+//	        
+//	        Tree tree = sentence.get(TreeAnnotation.class);
+//	        for (Tree subtree: tree) {
+//	          if(subtree.label().value().equals("NP")) {
+//	          	String np = "";
+//	        	
+//	          	if (Reports.notPRP(subtree)) {
+//	          		List<Word> npw = subtree.yieldWords();
+//	          		for (Word w : npw) {
+//	          			np = np + " " + w.toString();
+//	          		}
+//	            	nps.add(np.trim());
+//	          	}
+//	          }
+//	        }
+//	    }
+//	    return nps;
+//	}
 	
-	private static List<String> parseNP(String comment) {
-		 // initialize the log4j system
-	    BasicConfigurator.configure(); 
-	     
-	    // creates a StanfordCoreNLP object, with POS tagging, lemmatization,
-	    Properties props = new Properties();
-
-	    // in the actual application, you would only load the annotators that you need
-	    props.setProperty("annotators", "tokenize, ssplit, pos, parse");
-	    
-	    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-
-	    // create an empty Annotation just with the given text
-	    Annotation document = new Annotation(comment);
-
-	    // run all Annotators on this text
-	    pipeline.annotate(document);
-	    
-	    // these are all the sentences in this document
-	    List<CoreMap> sentences = document.get(SentencesAnnotation.class);
-	    
-
-	    List<String> nps = new ArrayList<String>();
-	    // for every sentence, get the annotations
-	    for (CoreMap sentence : sentences) {
-	        
-	        Tree tree = sentence.get(TreeAnnotation.class);
-	        for (Tree subtree: tree) {
-	          if(subtree.label().value().equals("NP")) {
-	          	String np = "";
-	        	
-	          	if (Reports.notPRP(subtree)) {
-	          		List<Word> npw = subtree.yieldWords();
-	          		for (Word w : npw) {
-	          			np = np + " " + w.toString();
-	          		}
-	            	nps.add(np.trim());
-	          	}
-	          }
-	        }
-	    }
-	    return nps;
-	}
-	
-	public static Map<Integer, TreeMap<String, Integer>> wordCloud() throws ClassNotFoundException, SQLException {
-		List<Integer> Lids = Reports.get_listing();
-		Map<Integer, TreeMap<String, Integer>> result = new HashMap<Integer, TreeMap<String, Integer>>();
-		
-		for (Integer Lid : Lids) {
-			String query = "SELECT comment FROM list_comment WHERE comment_to_list = " + Lid + ";";
-			ResultSet rs = bnb_util.execute_query(query);
-			TreeMap<String, Integer> cMap = new TreeMap<String, Integer>(Collections.reverseOrder());
-			while(rs.next()) {
-				String comment = rs.getString("comment");
-				List<String> listNp = Reports.parseNP(comment);
-				for (String np: listNp) {
-					if (cMap.containsKey(np)) {
-						cMap.put(np, cMap.get(np) + 1);
-					} else {
-						cMap.put(np, 1);
-					}
-				}
-			}
-			result.put(Lid, cMap);
-		}
-		return result;
-	}
+//	public static Map<Integer, TreeMap<String, Integer>> wordCloud() throws ClassNotFoundException, SQLException {
+//		List<Integer> Lids = Reports.get_listing();
+//		Map<Integer, TreeMap<String, Integer>> result = new HashMap<Integer, TreeMap<String, Integer>>();
+//		
+//		for (Integer Lid : Lids) {
+//			String query = "SELECT comment FROM list_comment WHERE comment_to_list = " + Lid + ";";
+//			ResultSet rs = bnb_util.execute_query(query);
+//			TreeMap<String, Integer> cMap = new TreeMap<String, Integer>(Collections.reverseOrder());
+//			while(rs.next()) {
+//				String comment = rs.getString("comment");
+//				List<String> listNp = Reports.parseNP(comment);
+//				for (String np: listNp) {
+//					if (cMap.containsKey(np)) {
+//						cMap.put(np, cMap.get(np) + 1);
+//					} else {
+//						cMap.put(np, 1);
+//					}
+//				}
+//			}
+//			result.put(Lid, cMap);
+//		}
+//		return result;
+//	}
 
 	public static List<List<Integer>> rankCancel() throws ClassNotFoundException, SQLException {
 		String renter_query = "select Uid, count(*) total_can from (select * from (history h inner join user u on u.uid = h.renter_id) where status = 'canceled') as rental_history group by Uid Desc;";

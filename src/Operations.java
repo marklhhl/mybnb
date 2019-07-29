@@ -93,16 +93,20 @@ public class Operations {
   }
   
   // method will return a value that will be used as part a create user query
-  public static String createUser(Scanner sc) {
-    String query = "(";
+  public static void createUser(Scanner sc, Statement stmt) {
+    String query = "INSERT INTO user (addr, country, city, postal_code, birthday, sin,"
+      + " first_name, last_name, middle_name, occupation, payment, direct_deposit, email, password) VALUES ";
+    query += "(";
     System.out.println("Enter your address: ");
     String address = sc.nextLine();
     query += ("'"+address+"', ");
     System.out.println("Enter your country: ");
     String country = sc.nextLine();
+    country = country.replaceAll("\\s", "");
     query += ("'"+country+"', ");
     System.out.println("Enter your city: ");
     String city = sc.nextLine();
+    city = city.replaceAll("\\s", "");
     query += ("'"+city+"', ");
     
     // valid postal_code input check
@@ -209,15 +213,18 @@ public class Operations {
     System.out.println("Enter your password: ");
     String password = sc.nextLine();
     query += ("'"+password+"');");
-    
-    return (query);
+    if (bnb_util.executeUpdate(query, stmt)) {
+      System.out.println("Successfully created user account");
+    } else {
+      System.out.println("Error with creating user account");
+    }
   }
   
   
   // method will return a value that will be used as part of a create list query
   public static void createListing(String hid, Scanner sc, Statement stmt) {
     String query = "INSERT INTO listing (home_type, longitude, latitude, city, addr, postal_code,"
-      + " country, wifi, beds, bathrooms, kitchens, parking, other_accom, addtional_comment, host_id) VALUES ";
+      + " country, wifi, people, beds, bathrooms, kitchens, parking, other_accom, addtional_comment, host_id) VALUES ";
     query += "(";
     System.out.println("Enter the type of home: ");
     String home_type = sc.nextLine();
@@ -256,6 +263,7 @@ public class Operations {
     
     System.out.println("Enter your city: ");
     String city = sc.nextLine();
+    city = city.replaceAll("\\s", "");
     query += "'"+city+"', ";
     System.out.println("Enter your address: ");
     String address = sc.nextLine();
@@ -277,6 +285,7 @@ public class Operations {
     
     System.out.println("Enter your country: ");
     String country = sc.nextLine();
+    country = country.replaceAll("\\s", "");
     query += "'"+country+"', ";
     
     String wifi;
@@ -288,6 +297,18 @@ public class Operations {
         break;
       } else {
         System.out.println("invalid input");
+      }
+    } while (true);
+    
+    String people;
+    do {
+      System.out.println("Number of people: ");
+      people = sc.nextLine();
+      if (!people.matches("\\d+")) {
+        System.out.println("invalid number");
+      } else {
+        query += people+", ";
+        break;
       }
     } while (true);
     
@@ -357,7 +378,9 @@ public class Operations {
     query += hid+");";
     try {
       stmt.executeUpdate(query);
+      System.out.println("Successfully created new listing");
     } catch (SQLException e) {
+      System.out.println("Failed to create new listing");
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
@@ -406,21 +429,24 @@ public class Operations {
     ResultSet newlyInsertedData;
     String lid;
     try {
-      newlyInsertedData = stmt.executeQuery("SELECT * FROM listing WHERE longitude="+longitude+" AND latitude="+latitude+" AND host_id="+hid);
+      newlyInsertedData = bnb_util.execute_query2("SELECT * FROM listing WHERE longitude="+longitude+" AND latitude="+latitude+" AND host_id="+hid, stmt);
       if (newlyInsertedData.next()) {
         lid = ""+newlyInsertedData.getInt("Lid");
         query+= lid +");";
+      } else {
+        System.out.println("Failed to grab list id for making calender");
       }
-    } catch (SQLException e) {
+    } catch (ClassNotFoundException | SQLException e) {
+      System.out.println("Failed to grab list id for making calender");
       // TODO Auto-generated catch block
       e.printStackTrace();
     }
     
-    try {
-      stmt.executeUpdate(query);
-    } catch (SQLException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+    
+    if (bnb_util.executeUpdate(query, stmt)) {
+      System.out.println("Successfully created calendar for your listing");
+    } else {
+      System.out.println("Failed to create calendar for your listing");
     }
   }
   
@@ -442,6 +468,7 @@ public class Operations {
         break;
       } else {
         System.out.println("You can't comment on ths renter yet because either he hasn't completed his stay at your listing");
+        return;
       }
     } catch (SQLException e) {
       // TODO Auto-generated catch block
@@ -452,13 +479,22 @@ public class Operations {
    if (!renterId.equals("quit")) {
      System.out.println("Enter your comment: ");
      String comment = sc.nextLine();
-     System.out.println("Enter rating: ");
-     String rating = sc.nextLine();
+     String rating;
+     do {
+       System.out.println("Enter rating(0-5): ");
+       rating = sc.nextLine();
+       if (!rating.matches("[0-5]")) {
+         System.out.println("invalid number");
+       } else {
+         break;
+       }
+     } while (true);
      String date = sdf.format(Calendar.getInstance().getTime());
      String sql = "INSERT INTO renter_comment (rating, date, comment, comment_writer, comment_to_renter) VALUES ("+rating+", '"+date+"', '"+comment+"', "+writerId+
          ", "+renterId+");";
      try {
        stmt.executeUpdate(sql);
+       System.out.println("Successfully rated renter");
      } catch (SQLException e) {
        // TODO Auto-generated catch block
        e.printStackTrace();
@@ -483,6 +519,7 @@ public class Operations {
         break;
       } else {
         System.out.println("You can't comment on ths list yet because you havn't completed the stay");
+        return;
       }
     } catch (SQLException e) {
       // TODO Auto-generated catch block
@@ -493,13 +530,22 @@ public class Operations {
    if (!ListId.equals("quit")) {
      System.out.println("Enter your comment: ");
      String comment = sc.nextLine();
-     System.out.println("Enter rating: ");
-     String rating = sc.nextLine();
+     String rating;
+     do {
+       System.out.println("Enter rating(0-5): ");
+       rating = sc.nextLine();
+       if (!rating.matches("[0-5]")) {
+         System.out.println("invalid number");
+       } else {
+         break;
+       }
+     } while (true);
      String date = sdf.format(Calendar.getInstance().getTime());
      String sql = "INSERT INTO list_comment (rating, date, comment, comment_writer, comment_to_list) VALUES ("+rating+", '"+date+"', '"+comment+"', "+writerId+
          ", "+ListId+");";
      try {
       stmt.executeUpdate(sql);
+      System.out.println("Successfully rated listing");
     } catch (SQLException e) {
       // TODO Auto-generated catch block
       e.printStackTrace();
@@ -510,7 +556,7 @@ public class Operations {
  
  
 //method will return a value that will be used as part a create user query
-public static void createBooking(String rid, Scanner sc, Statement stmt) throws SQLException {
+public static void createBooking(String rid, Scanner sc, Statement stmt) {
   // calendar contains when a listing is avaialbe and the price. However, booking can book a date in between the avaiable dates
   boolean error = false;
   String listId;
@@ -520,11 +566,17 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
     if (!listId.matches("\\d+")) {
       System.out.println("invalid number");
     } else {
-      ResultSet r = stmt.executeQuery("SELECT * FROM listing WHERE Lid="+listId+";");
-      if (!r.next()) {
-        System.out.println("list id does not exist");
-      } else {
-        break;
+      ResultSet r;
+      try {
+        r = stmt.executeQuery("SELECT * FROM listing WHERE Lid="+listId+";");
+        if (!r.next()) {
+          System.out.println("list id does not exist");
+        } else {
+          break;
+        }
+      } catch (SQLException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
       }
     }
   } while (true);
@@ -557,7 +609,7 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
     
     List<HashMap> calendarListings = getConsecutiveDateEntries(listId, startDate, endDate, stmt);
     if (calendarListings.size() == 0) {
-      // incorrect 
+      System.out.println("The dates you selected for this list does not exist, try again");
     } else {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
       Date startD = null;
@@ -577,7 +629,12 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
         // check to see if it should be deleted
         if (((Date)a.get("avaliable_from")).compareTo(startD) == 0 && ((Date)a.get("avaliable_till")).compareTo(endD) == 0) {
           sql = "DELETE FROM calendar WHERE Caid="+a.get("Caid")+";";
-          stmt.executeUpdate(sql);
+          try {
+            stmt.executeUpdate(sql);
+          } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
         }
         
         // check front
@@ -586,7 +643,12 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
           c.setTime(startD);
           c.add(Calendar.DATE, -1);
           sql = "UPDATE calendar SET avaliable_till='"+sdf.format(c.getTime())+"' WHERE listing_id="+a.get("listing_id")+";";
-          stmt.executeUpdate(sql);
+          try {
+            stmt.executeUpdate(sql);
+          } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+          }
           updatedOnce = true;
         }
         
@@ -598,36 +660,64 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
           // update original if it hasnt been updated it. Create a new one if it did
           if (!updatedOnce) {
             sql = "UPDATE calendar SET avaliable_from='"+sdf.format(d.getTime())+"' WHERE listing_id="+a.get("listing_id")+";";
-            stmt.executeUpdate(sql);
+            try {
+              stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           }else {
             sql = "INSERT INTO calendar (avaliable_from, avaliable_till, price, listing_id) VALUES ('"+sdf.format(d.getTime())+"', '"+sdf.format(a.get("avaliable_till"))+
                 "', "+a.get("price")+", "+a.get("listing_id")+");";
             System.out.println(sql);
-            stmt.executeUpdate(sql);
+            try {
+              stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           }
         }
         // plus one because booking days are inclusive
         int totalDays = getDateDiff(startD,endD,TimeUnit.DAYS)+1;
         // get host id
-        ResultSet hlist = stmt.executeQuery("Select * FROM listing WHERE Lid="+listId+";");
+        ResultSet hlist;
         int hostId = 0;
-        if (hlist.next()) {
-          hostId = hlist.getInt("host_id");
+        try {
+          hlist = stmt.executeQuery("Select * FROM listing WHERE Lid="+listId+";");
+          if (hlist.next()) {
+            hostId = hlist.getInt("host_id");
+          }
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
         }
         // insert data into history
         sql = "INSERT INTO history (start, end, transaction_date, cost_per_day, total_cost, status, host_id, renter_id, list_id) VALUES ('"+startDate+"', '"+endDate+"', '"+sdf.format(Calendar.getInstance().getTime())+"', "+a.get("price")+
             ", "+(totalDays*(Double)a.get("price"))+", "+"'Pending', "+hostId+", "+rid+", "+a.get("listing_id")+");";
-        stmt.executeUpdate(sql);
+        try {
+          stmt.executeUpdate(sql);
+        } catch (SQLException e) {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
         break;
       }else {
         HashMap a = null;
         for (int i = 0; i < calendarListings.size(); i++) {
           a = calendarListings.get(i);
-          ResultSet hlist = stmt.executeQuery("Select * FROM listing WHERE Lid="+listId+";");
+          ResultSet hlist;
           int hostId = 0;
-          if (hlist.next()) {
-            hostId = hlist.getInt("host_id");
+          try {
+            hlist = stmt.executeQuery("Select * FROM listing WHERE Lid="+listId+";");
+            if (hlist.next()) {
+              hostId = hlist.getInt("host_id");
+            }
+          } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
           }
+          
           // handle first element
           if (i == 0) {
             Date start;
@@ -636,20 +726,35 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
               c.setTime(startD);
               c.add(Calendar.DATE, -1);
               sql = "UPDATE calendar SET avaliable_till='"+sdf.format(c.getTime())+"' WHERE listing_id="+a.get("listing_id")+";";
-              stmt.executeUpdate(sql);
+              try {
+                stmt.executeUpdate(sql);
+              } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
               start = startD;
             } else {
               start = (Date) a.get("avaliable_from");
               // delete
               System.out.println(1);
               sql = "DELETE FROM calendar WHERE Caid="+a.get("Caid")+";";
-              stmt.executeUpdate(sql);
+              try {
+                stmt.executeUpdate(sql);
+              } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
             }
             int totalDays = getDateDiff(start,(Date)a.get("avaliable_till"),TimeUnit.DAYS)+1;
             // create history entry
             sql = "INSERT INTO history (start, end, transaction_date, cost_per_day, total_cost, status, host_id, renter_id, list_id) VALUES ('"+sdf.format(start)+"', '"+sdf.format(a.get("avaliable_till"))+"', '"+sdf.format(Calendar.getInstance().getTime())+"', "+a.get("price")+
                 ", "+(totalDays*(Double)a.get("price"))+", "+"'Pending', "+hostId+", "+rid+", "+a.get("listing_id")+");";
-            stmt.executeQuery(sql);
+            try {
+              stmt.executeQuery(sql);
+            } catch (SQLException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           // handle last element
           } else if (i == calendarListings.size()-1) {
             Date end;
@@ -658,31 +763,56 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
               c.setTime(startD);
               c.add(Calendar.DATE, 1);
               sql = "UPDATE calendar SET avaliable_from='"+sdf.format(c.getTime())+"' WHERE listing_id="+a.get("listing_id")+";";
-              stmt.executeUpdate(sql);
+              try {
+                stmt.executeUpdate(sql);
+              } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
               end = endD;
             } else {
               end = (Date) a.get("avaliable_till");
               System.out.println(2);
               // delete
               sql = "DELETE FROM calendar WHERE Caid="+a.get("Caid")+";";
-              stmt.executeUpdate(sql);
+              try {
+                stmt.executeUpdate(sql);
+              } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+              }
             }
             // create history entry
             int totalDays = getDateDiff((Date)a.get("avaliable_from"), end, TimeUnit.DAYS)+1;
             sql = "INSERT INTO history (start, end, transaction_date, cost_per_day, total_cost, status, host_id, renter_id, list_id) VALUES ('"+sdf.format(a.get("avaliable_from"))+"', '"+sdf.format(end)+"', '"+sdf.format(Calendar.getInstance().getTime())+"', "+a.get("price")+
                 ", "+(totalDays*(Double)a.get("price"))+", "+"'Pending', "+hostId+", "+rid+", "+a.get("listing_id")+");";
-            stmt.executeUpdate(sql);
+            try {
+              stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           // handle all middle elements
           } else {
             // create history entry
             int totalDays = getDateDiff((Date)a.get("avaliable_from"), (Date)a.get("avaliable_till"), TimeUnit.DAYS)+1;
             sql = "INSERT INTO history (start, end, transaction_date, cost_per_day, total_cost, status, host_id, renter_id, list_id) VALUES ('"+sdf.format(a.get("avaliable_from"))+"', '"+sdf.format(a.get("avaliable_till"))+"', '"+sdf.format(Calendar.getInstance().getTime())+"', "+a.get("price")+
                 ", "+(totalDays*(Double)a.get("price"))+", "+"'Pending', "+hostId+", "+rid+", "+a.get("listing_id")+");";
-            stmt.executeUpdate(sql);
+            try {
+              stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
             System.out.println(3);
             // delete calendar entry
             sql = "DELETE FROM calendar WHERE Caid="+a.get("Caid")+";";
-            stmt.executeUpdate(sql);
+            try {
+              stmt.executeUpdate(sql);
+            } catch (SQLException e) {
+              // TODO Auto-generated catch block
+              e.printStackTrace();
+            }
           }
         }
         break;
@@ -864,5 +994,358 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) throws 
        break;
      }
    } while(true);
+ }
+ 
+ 
+ public static void querySearch(int queryType, Scanner sc, Statement stmt) {
+   Queries queryObject;
+   boolean askRadius = true;
+   boolean addressType = false;
+   // instantiate query object using address
+   if (queryType == 1) {
+     System.out.println("Enter the address of the listing: ");
+     String address = sc.nextLine();
+     queryObject = new Queries(address, true);
+     askRadius = false;
+     addressType = true;
+   // instantiate query object by using postal code
+   } else if (queryType == 2) {
+     String postal_code;
+     do {
+       System.out.println("Enter your postal code: ");
+       postal_code = sc.nextLine();
+       Pattern pattern = Pattern.compile("^[A-Z][0-9][A-Z][0-9][A-Z][0-9]$");
+       if (!pattern.matcher(postal_code).matches()) {
+         System.out.println("Invalid input, make sure there are no spaces and letters are capital");
+       } else {
+         break;
+       }
+     } while (true);
+     queryObject = new Queries(postal_code);
+   // instantiate query object by using longitutde and latitude
+   } else {
+     String longitude;
+     do {
+       System.out.println("Enter the longtitude: ");
+       longitude = sc.nextLine();
+       if (!longitude.matches("^-?([1]?[1-7][1-9]|[1]?[1-8][0]|[1-9]?[0-9])\\.{1}\\d{1,6}")) {
+         System.out.println("Invalid longitude");
+       } else if (longitude.length() > 9) {
+         System.out.println("Invalid length of longtitude(maximum 9 digits)");
+       } else {
+         break;
+       }
+     } while (true);
+     
+     String latitude;
+     do {
+       System.out.println("Enter the latitude: ");
+       latitude = sc.nextLine();
+       if (!latitude.matches("^-?([1-8]?[1-9]|[1-9]0)\\.{1}\\d{1,6}")) {
+         System.out.println("Invalid latitude");
+       } else if (latitude.length() > 8) {
+         System.out.println("Invalid length of longtitude(maximum 8 digits)");
+       } else {
+         break;
+       }
+     } while (true);
+     queryObject = new Queries(Double.parseDouble(longitude), Double.parseDouble(latitude));
+   }
+   
+   if (!addressType) {
+  // ask for optional parameters
+     if (askRadius) {
+       String radius;
+       do {
+         System.out.println("Enter the radius in km: ");
+         radius = sc.nextLine();
+         if (!radius.matches("\\d+")) {
+           System.out.println("invalid number");
+         } else {
+           break;
+         }
+       } while (true);
+       queryObject.withRadius(Integer.parseInt(radius));
+     }
+     
+     // price order
+     String sortPrice;
+     boolean sortP;
+     String ascOrder;
+     boolean ascOrd;
+     do {
+       System.out.println("Do you want to sort the price(y/n): ");
+       sortPrice = sc.nextLine();
+       if (sortPrice.equals("y")) {
+         do {
+           System.out.println("Do you want to sort in ascending order(y/n): ");
+           ascOrder = sc.nextLine();
+           if (ascOrder.equals("y")) {
+             ascOrd = true;
+             break;
+           } else if (ascOrder.equals("n")) {
+             ascOrd = false;
+             break;
+           } else {
+             System.out.println("Invalid input");
+           }
+         } while (true);
+         queryObject.withSortPrice(true, ascOrd);
+         break;
+       } else if (sortPrice.equals("n")) {
+         break;
+       } else {
+         System.out.println("Invalid input");
+       }
+     } while (true);
+     
+     // price range
+     String searchPrice;
+     do {
+       System.out.println("Do you want to search by price range(y/n): ");
+       searchPrice = sc.nextLine();
+       if (searchPrice.equals("y")) {
+         String lowPrice, highPrice;
+         double lPrice, hPrice;
+         do {
+           System.out.println("Enter the lowest price: ");
+           lowPrice = sc.nextLine();
+           try {
+             lPrice = Double.parseDouble(lowPrice);
+             break;
+           } catch (Exception e) {
+             System.out.println("Input is not a double");
+           }
+         } while (true);
+         do {
+           System.out.println("Enter the highest price: ");
+           highPrice = sc.nextLine();
+           try {
+             hPrice = Double.parseDouble(highPrice);
+             break;
+           } catch (Exception e) {
+             System.out.println("Input is not a double");
+           }
+         } while (true);
+         queryObject.withPriceRange(lPrice, hPrice);
+         break;
+       } else if (searchPrice.equals("n")) {
+         break;
+       } else {
+         System.out.println("Invalid input");
+       }
+     } while (true);
+     
+     // date range
+     String searchDate;
+     do {
+       System.out.println("Do you want to search by date range(y/n): ");
+       searchDate = sc.nextLine();
+       if (searchDate.equals("y")) {
+         String startDate;
+         do {
+           System.out.println("Enter the start date of the listing(yyyy-mm-dd): ");
+           startDate = sc.nextLine();
+           Pattern pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
+           if (!pattern.matcher(startDate).matches()) {
+             System.out.println("Invalid date input");
+           } else {
+             break;
+           }
+         } while(true);
+         String endDate;
+         do {
+           System.out.println("Enter the end date of the listing(yyyy-mm-dd): ");
+           endDate = sc.nextLine();
+           Pattern pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
+           if (!pattern.matcher(endDate).matches()) {
+             System.out.println("Invalid date input");
+           } else {
+             break;
+           }
+         } while(true);
+         String overlap;
+         do {
+           System.out.println("Do you allow the dates to overlap(y/n): ");
+           overlap = sc.nextLine();
+           if (overlap.equals("y")) {
+             queryObject.withDateRange(startDate, endDate, true);
+             break;
+           } else if (overlap.equals("n")) {
+             queryObject.withDateRange(startDate, endDate, false);
+             break;
+           } else {
+             System.out.println("Invalid input");
+           }
+         } while (true);
+         break;
+       } else if (searchDate.equals("n")) {
+         break;
+       } else {
+         System.out.println("Invalid input");
+       }
+     } while (true);
+     
+     // beds
+     String bedConstraint;
+     do {
+       System.out.println("Do you want to constraint number of beds(y/n): ");
+       bedConstraint = sc.nextLine();
+       if (bedConstraint.equals("y")) {
+         String bedNum;
+         do {
+           System.out.println("Enter the minimum number of beds: ");
+           bedNum = sc.nextLine();
+           if (!bedNum.matches("\\d+")) {
+             System.out.println("invalid number");
+           } else {
+             queryObject.withBeds(Integer.parseInt(bedNum));
+             break;
+           }
+         } while (true);
+         break;
+       } else if (bedConstraint.equals("n")) {
+         break;
+       } else {
+         System.out.println("invalid input");
+       }
+     } while(true);
+     
+     // parking
+     String parkingConstraint;
+     do {
+       System.out.println("Do you want to constraint number of parkings(y/n): ");
+       parkingConstraint = sc.nextLine();
+       if (parkingConstraint.equals("y")) {
+         String parkingNum;
+         do {
+           System.out.println("Enter the minimum number of parkings: ");
+           parkingNum = sc.nextLine();
+           if (!parkingNum.matches("\\d+")) {
+             System.out.println("invalid number");
+           } else {
+             queryObject.withParking(Integer.parseInt(parkingNum));
+             break;
+           }
+         } while (true);
+         break;
+       } else if (parkingConstraint.equals("n")) {
+         break;
+       } else {
+         System.out.println("invalid input");
+       }
+     } while(true);
+     
+     // bath
+     String bathConstraint;
+     do {
+       System.out.println("Do you want to constraint number of baths(y/n): ");
+       bathConstraint = sc.nextLine();
+       if (bathConstraint.equals("y")) {
+         String bathNum;
+         do {
+           System.out.println("Enter the minimum number of baths: ");
+           bathNum = sc.nextLine();
+           if (!bathNum.matches("\\d+")) {
+             System.out.println("invalid number");
+           } else {
+             queryObject.withBaths(Integer.parseInt(bathNum));
+             break;
+           }
+         } while (true);
+         break;
+       } else if (bathConstraint.equals("n")) {
+         break;
+       } else {
+         System.out.println("invalid input");
+       }
+     } while(true);
+     
+     // kitchen
+     String kitchenConstraint;
+     do {
+       System.out.println("Do you want to constraint number of kitchens(y/n): ");
+       kitchenConstraint = sc.nextLine();
+       if (kitchenConstraint.equals("y")) {
+         String kitchenNum;
+         do {
+           System.out.println("Enter the minimum number of kitchens: ");
+           kitchenNum = sc.nextLine();
+           if (!kitchenNum.matches("\\d+")) {
+             System.out.println("invalid number");
+           } else {
+             queryObject.withKitchens(Integer.parseInt(kitchenNum));
+             break;
+           }
+         } while (true);
+         break;
+       } else if (kitchenConstraint.equals("n")) {
+         break;
+       } else {
+         System.out.println("invalid input");
+       }
+     } while(true);
+     
+     //wifi
+     String wifiConstraint;
+     do {
+       System.out.println("Do you need wifi(y/n): ");
+       wifiConstraint = sc.nextLine();
+       if (wifiConstraint.equals("y")) {
+         queryObject.withWifi(true);
+         break;
+       } else if (wifiConstraint.equals("y")) {
+         queryObject.withWifi(false);
+         break;
+       } else {
+         System.out.println("invalid input");
+       }
+     }while (true);
+   }
+   
+   
+   // execute query
+   String query = queryObject.prepare_query();
+   try {
+    ResultSet rs = stmt.executeQuery(query);
+    while (rs.next()) {
+      String text = "";
+      int id = rs.getInt("Lid");
+      String home_type = rs.getString("home_type");
+      String city = rs.getString("city");
+      String addr = rs.getString("addr");
+      String postal = rs.getString("postal_code");
+      String country = rs.getString("country");
+      String wifi = rs.getString("wifi");
+      int people = rs.getInt("people");
+      int beds = rs.getInt("beds");
+      int bathrooms = rs.getInt("bathrooms");
+      int kitchens = rs.getInt("kitchens");
+      int parking = rs.getInt("parking");
+      String other = rs.getString("other_accom");
+      String comments = rs.getString("addtional_comment");
+      
+      text = "Lid: " + id + ", Home Type: " + home_type + ", City: " + city + ", Address: " + addr + ", Postal Code: " + postal + ", Country: "
+             + country + ", Wifi: " + wifi + ", MaxPeople: " + people + ", Beds: " + beds + ", Bathrooms: " + bathrooms + ", Kitchen: " + kitchens
+             + ", Parking: " + parking;
+      if (other != null) {
+        text = text + ", Other Accomadations: " + other;
+      }
+      
+      if (comments != null) {
+        text = text + ", Additional Comments: " + comments;
+      }
+      text = text + " avaliable from: " + rs.getString("avaliable_from") + " avaliable till: " + rs.getString("avaliable_till") + " Calendar Id:" + rs.getInt("Caid") + " Price: " + rs.getInt("price");
+      System.out.println(text);
+      
+    }
+  } catch (SQLException e) {
+    System.out.println("Error with executing query");
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+   
+   // display result
+   
  }
 }

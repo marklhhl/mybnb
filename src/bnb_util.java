@@ -59,7 +59,7 @@ public class bnb_util {
 		try {
 			//Establish connection
 			Statement stmt = connection.createStatement();
-			// System.out.println(query);
+			 System.out.println(query);
 			rs = stmt.executeQuery(query);
 		} catch (SQLException e) {
 			System.err.println(e);
@@ -84,5 +84,29 @@ public class bnb_util {
 			result.add(regionCode.substring(0,1) + Integer.toString(adj_num - 1) + regionCode.substring(2));
 		}
 		return result;
+	}
+	
+//execute query with connection already being set
+ public static ResultSet execute_query2(String query, Statement stmt) throws ClassNotFoundException {
+   try {
+     return stmt.executeQuery(query);
+   } catch (SQLException e) {
+     System.out.println("Error with executing the following statement: ");
+     System.out.println(query);
+     e.printStackTrace();
+     return null;
+   }
+ }
+ 
+	public static boolean executeUpdate(String query, Statement stmt) {
+	  try {
+      stmt.executeUpdate(query);
+      return true;
+    } catch (SQLException e) {
+      System.out.println("Error with executing the following statement: ");
+      System.out.println(query);
+      e.printStackTrace();
+      return false;
+    }
 	}
 }
