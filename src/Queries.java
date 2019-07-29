@@ -31,8 +31,9 @@ public class Queries {
 	public Queries(String address, boolean verify) {
 		this.address = address;
 	}
-		
-	// instantiate object with optional parameters
+
+	
+	// instantiate object with optional constraints
 	public Queries withRadius(int radius) {
 		this.radius = radius;
 		return this;

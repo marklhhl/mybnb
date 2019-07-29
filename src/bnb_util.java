@@ -44,6 +44,7 @@ public class bnb_util {
 	
 	public static boolean closeConnection() throws ClassNotFoundException {
 		try {
+			//Close connection
 			connection.close();
 			return true;
 		} catch (SQLException e) {
