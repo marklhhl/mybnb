@@ -30,7 +30,7 @@ CREATE TABLE `calendar` (
   `listing_id` int(11) NOT NULL,
   PRIMARY KEY (`Caid`),
   KEY `Listing Id_idx` (`listing_id`),
-  CONSTRAINT `Listing Id` FOREIGN KEY (`listing_id`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE
+  CONSTRAINT `Listing Id` FOREIGN KEY (`listing_id`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=334 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -68,6 +68,7 @@ CREATE TABLE `history` (
   `start` date NOT NULL,
   `end` date NOT NULL,
   `transaction_date` date NOT NULL,
+  `cancelation_date` date DEFAULT NULL,
   `cost_per_day` decimal(10,2) NOT NULL,
   `total_cost` decimal(10,2) NOT NULL,
   `status` varchar(9) NOT NULL,
@@ -80,7 +81,7 @@ CREATE TABLE `history` (
   KEY `host_idx` (`host_id`),
   CONSTRAINT `host` FOREIGN KEY (`host_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `list` FOREIGN KEY (`list_id`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `renter` FOREIGN KEY (`renter_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE
+  CONSTRAINT `renter` FOREIGN KEY (`renter_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -127,9 +128,9 @@ CREATE TABLE `list_comment` (
   PRIMARY KEY (`Cid`),
   KEY `writer_idx` (`comment_writer`),
   KEY `to_list_idx` (`comment_to_list`),
-  CONSTRAINT `comment_writer2` FOREIGN KEY (`comment_writer`) REFERENCES `user` (`Uid`) ON DELETE CASCADE,
+  CONSTRAINT `comment_writer2` FOREIGN KEY (`comment_writer`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `list_comment` FOREIGN KEY (`comment_to_list`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=556 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -182,8 +183,8 @@ CREATE TABLE `listing` (
   PRIMARY KEY (`Lid`),
   UNIQUE KEY `Lid_UNIQUE` (`Lid`),
   KEY `host_id_idx` (`host_id`),
-  CONSTRAINT `host_id` FOREIGN KEY (`host_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+  CONSTRAINT `host_id` FOREIGN KEY (`host_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -244,9 +245,9 @@ CREATE TABLE `renter_comment` (
   PRIMARY KEY (`Cid`),
   KEY `to_renter_idx` (`comment_to_renter`),
   KEY `comment_writer_idx` (`comment_writer`),
-  CONSTRAINT `comment_to` FOREIGN KEY (`comment_to_renter`) REFERENCES `user` (`Uid`) ON DELETE CASCADE,
+  CONSTRAINT `comment_to` FOREIGN KEY (`comment_to_renter`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `comment_writer` FOREIGN KEY (`comment_writer`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=67 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -274,7 +275,7 @@ CREATE TABLE `user` (
   `password` varchar(100) NOT NULL,
   PRIMARY KEY (`Uid`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -327,4 +328,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-28 22:16:57
+-- Dump completed on 2019-07-29  6:04:57

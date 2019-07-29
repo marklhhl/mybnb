@@ -60,7 +60,7 @@ public class bnb_util {
 		try {
 			//Establish connection
 			Statement stmt = connection.createStatement();
-//			 System.out.println(query);
+			 System.out.println(query);
 			rs = stmt.executeQuery(query);
 		} catch (SQLException e) {
 			System.err.println(e);

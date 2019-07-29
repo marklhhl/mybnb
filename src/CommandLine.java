@@ -148,7 +148,9 @@ public class CommandLine {
       System.out.println("5. Search for listings.");
       System.out.println("6. Cancel booking.");
       System.out.println("7. Cancel listing.");
-      System.out.print("Choose one of the previous options [0-7]: ");
+      System.out.println("8. Change listing price.");
+      System.out.println("9. Toolkit.");
+      System.out.print("Choose one of the previous options [0-8]: ");
       input = sc.nextLine();
       try {
         choice = Integer.parseInt(input);
@@ -170,6 +172,15 @@ public class CommandLine {
           break;
         case 6:
           Operations.cancelBooking(""+user_id, sc, stmt);
+          break;
+        case 7:
+          Operations.cancelListing(""+user_id, sc, stmt);
+          break;
+        case 8:
+          Operations.changePrice(""+user_id, sc, stmt);
+          break;
+        case 9:
+          toolkitPage();
         }
       } catch (NumberFormatException e) {
         input = "-1";
@@ -200,6 +211,32 @@ public class CommandLine {
           break;
         case 3:
           Operations.querySearch(3, sc, stmt);
+          break;
+        }
+      } catch (NumberFormatException e) {
+        input = "-1";
+      }
+    } while (input.compareTo("0") != 0);
+  }
+  
+  public static void toolkitPage() {
+    String input = "";
+    int choice = -1;
+    do {
+      System.out.println("=========Tool kits=========");
+      System.out.println("0. Exit.");
+      System.out.println("1. Get suggested price.");
+      System.out.println("2. Get suggested amenity.");
+      System.out.print("Choose one of the previous options [0-2]: ");
+      input = sc.nextLine();
+      try {
+        choice = Integer.parseInt(input);
+        switch (choice) { //Activate the desired functionality
+        case 1:
+          Operations.getSuggestedPrice(sc, stmt);
+          break;
+        case 2:
+          Operations.getSuggestedAmenity(sc, stmt);
           break;
         }
       } catch (NumberFormatException e) {

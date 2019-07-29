@@ -2,6 +2,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -829,7 +830,7 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) {
      System.out.println("Enter the id of the listing: ");
      listId = sc.nextLine();
      try {
-      ResultSet listings = stmt.executeQuery("SELECT * FROM calendar WHERE listing_id = (SELECT Lid FROM listing WHERE host_id ="+hostId+");");
+      ResultSet listings = stmt.executeQuery("SELECT * FROM calendar WHERE listing_id IN (SELECT Lid FROM listing WHERE host_id ="+hostId+");");
       if (!listId.matches("\\d+")) {
         System.out.println("invalid number");
       } else if (listings.next()){
@@ -885,7 +886,7 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) {
      } while(true);
      List<HashMap> calendarListings = getConsecutiveDateEntries(listId, startDate, endDate, stmt);
      if (calendarListings.size() == 0) {
-       // error with date input
+       System.out.println("No listing of such was in those dates were found");
      } else {
        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
        Date startD = null;
@@ -1343,9 +1344,8 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) {
     // TODO Auto-generated catch block
     e.printStackTrace();
   }
-   
-   // display result
  }
+ 
  
  public static void cancelBooking(String userId, Scanner sc, Statement stmt) {
    String historyID;
@@ -1374,5 +1374,156 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) {
   }
  }
  
+ 
+ public static void cancelListing(String userId, Scanner sc, Statement stmt) {
+   String ListID;
+   do {
+     System.out.println("Enter the list id you want to delete: ");
+     ListID = sc.nextLine();
+     if (!ListID.matches("\\d+")) {
+       System.out.println("invalid number");
+     } else {
+       break;
+     }
+   } while (true);
+   
+   String query = "DELETE FROM listing WHERE Lid="+ListID+" AND host_id="+userId+";";
+   try {
+    int affected = stmt.executeUpdate(query);
+    if (affected > 0) {
+      System.out.println("Successfully cancelled your listing");
+    } else {
+      System.out.println("No listing was cancelled");
+    }
+  } catch (SQLException e) {
+    System.out.println("Failed to cancel listing");
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+ }
+ 
+ 
+ public static void getSuggestedPrice(Scanner sc, Statement stmt) {
+// valid postal_code input check
+   String postal_code;
+   do {
+     System.out.println("Enter your postal code: ");
+     postal_code = sc.nextLine();
+     Pattern pattern = Pattern.compile("^[A-Z][0-9][A-Z][0-9][A-Z][0-9]$");
+     if (!pattern.matcher(postal_code).matches()) {
+       System.out.println("Invalid input, make sure there are no spaces and letters are capital");
+     } else {
+       break;
+     }
+   } while (true);
+   
+   String people;
+   do {
+     System.out.println("Number of people: ");
+     people = sc.nextLine();
+     if (!people.matches("\\d+")) {
+       System.out.println("invalid number");
+     } else {
+       break;
+     }
+   } while (true);
+   int peopleNum = Integer.parseInt(people);
+   
+   String startDate;
+   do {
+     System.out.println("Enter the start date of the listing(yyyy-mm-dd): ");
+     startDate = sc.nextLine();
+     Pattern pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
+     if (!pattern.matcher(startDate).matches()) {
+       System.out.println("Invalid date input");
+     } else {
+       break;
+     }
+   } while(true);
+   
+   String endDate;
+   do {
+     System.out.println("Enter the start date of the listing(yyyy-mm-dd): ");
+     endDate = sc.nextLine();
+     Pattern pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
+     if (!pattern.matcher(endDate).matches()) {
+       System.out.println("Invalid date input");
+     } else {
+       break;
+     }
+   } while(true);
+   
+   try {
+    double value = Toolkit.suggest_price(postal_code, peopleNum, startDate, endDate, stmt);
+    System.out.println("The average market value is: "+value);
+  } catch (ClassNotFoundException | SQLException e) {
+    System.out.println("Failed to retrieve estimated value");
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+ }
+ 
+ 
+ public static void getSuggestedAmenity(Scanner sc, Statement stmt) {
+   String startPrice;
+   do {
+     System.out.println("Enter lowest price: ");
+     startPrice = sc.nextLine();
+     if (!startPrice.matches("\\d+")) {
+       System.out.println("invalid number");
+     } else {
+       break;
+     }
+   } while (true);
+   int startP = Integer.parseInt(startPrice);
+   
+   String endPrice;
+   do {
+     System.out.println("Enter highest price: ");
+     endPrice = sc.nextLine();
+     if (!endPrice.matches("\\d+")) {
+       System.out.println("invalid number");
+     } else {
+       break;
+     }
+   } while (true);
+   int endP = Integer.parseInt(endPrice);
+   
+   String startDate;
+   do {
+     System.out.println("Enter the start date of the listing(yyyy-mm-dd): ");
+     startDate = sc.nextLine();
+     Pattern pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
+     if (!pattern.matcher(startDate).matches()) {
+       System.out.println("Invalid date input");
+     } else {
+       break;
+     }
+   } while(true);
+   
+   String endDate;
+   do {
+     System.out.println("Enter the end date of the listing(yyyy-mm-dd): ");
+     endDate = sc.nextLine();
+     Pattern pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
+     if (!pattern.matcher(endDate).matches()) {
+       System.out.println("Invalid date input");
+     } else {
+       break;
+     }
+   } while(true);
+   
+   try {
+    Map<String, Integer> value = Toolkit.suggest_amenity(startP, endP, startDate, endDate, stmt);
+    System.out.println("The amentity you will need in order to achieve your goal are as follows: ");
+    for (Map.Entry<String, Integer> entry : value.entrySet()) {
+      System.out.println(entry.getKey() + " = " + entry.getValue());
+    }
+  } catch (ClassNotFoundException | SQLException e) {
+    System.out.println("Failed to retrieve estimated value");
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+ }
  
 }
