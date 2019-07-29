@@ -146,7 +146,9 @@ public class CommandLine {
       System.out.println("3. Comment a listing.");
       System.out.println("4. Comment a renter.");
       System.out.println("5. Search for listings.");
-      System.out.print("Choose one of the previous options [0-5]: ");
+      System.out.println("6. Cancel booking.");
+      System.out.println("7. Cancel listing.");
+      System.out.print("Choose one of the previous options [0-7]: ");
       input = sc.nextLine();
       try {
         choice = Integer.parseInt(input);
@@ -166,6 +168,8 @@ public class CommandLine {
         case 5:
           queryPage();
           break;
+        case 6:
+          Operations.cancelBooking(""+user_id, sc, stmt);
         }
       } catch (NumberFormatException e) {
         input = "-1";

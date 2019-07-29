@@ -1337,7 +1337,6 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) {
       }
       text = text + " avaliable from: " + rs.getString("avaliable_from") + " avaliable till: " + rs.getString("avaliable_till") + " Calendar Id:" + rs.getInt("Caid") + " Price: " + rs.getInt("price");
       System.out.println(text);
-      
     }
   } catch (SQLException e) {
     System.out.println("Error with executing query");
@@ -1346,6 +1345,34 @@ public static void createBooking(String rid, Scanner sc, Statement stmt) {
   }
    
    // display result
-   
  }
+ 
+ public static void cancelBooking(String userId, Scanner sc, Statement stmt) {
+   String historyID;
+   do {
+     System.out.println("Enter the history id you want to cancel: ");
+     historyID = sc.nextLine();
+     if (!historyID.matches("\\d+")) {
+       System.out.println("invalid number");
+     } else {
+       break;
+     }
+   } while (true);
+   
+   String query = "UPDATE history SET status='Canceled' WHERE Hsid="+historyID+" AND renter_id="+userId+" AND status='Pending';";
+   try {
+    int affected = stmt.executeUpdate(query);
+    if (affected > 0) {
+      System.out.println("Successfully cancelled your booking");
+    } else {
+      System.out.println("No booking was cancelled");
+    }
+  } catch (SQLException e) {
+    System.out.println("Failed to cancel booking");
+    // TODO Auto-generated catch block
+    e.printStackTrace();
+  }
+ }
+ 
+ 
 }

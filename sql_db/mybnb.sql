@@ -30,9 +30,31 @@ CREATE TABLE `calendar` (
   `listing_id` int(11) NOT NULL,
   PRIMARY KEY (`Caid`),
   KEY `Listing Id_idx` (`listing_id`),
-  CONSTRAINT `Listing Id` FOREIGN KEY (`listing_id`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=223 DEFAULT CHARSET=latin1;
+  CONSTRAINT `Listing Id` FOREIGN KEY (`listing_id`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=334 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `mybnb`.`calendar_BEFORE_INSERT` BEFORE INSERT ON `calendar` FOR EACH ROW
+BEGIN
+declare msg varchar(255);
+if new.avaliable_from > new.avaliable_till then
+set msg = 'Constraint violated: avaliable_from <= avaliable_till';
+signal sqlstate '45000' set message_text = msg;
+end if;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `history`
@@ -58,8 +80,8 @@ CREATE TABLE `history` (
   KEY `host_idx` (`host_id`),
   CONSTRAINT `host` FOREIGN KEY (`host_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
   CONSTRAINT `list` FOREIGN KEY (`list_id`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE ON UPDATE NO ACTION,
-  CONSTRAINT `renter` FOREIGN KEY (`renter_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=4445 DEFAULT CHARSET=latin1;
+  CONSTRAINT `renter` FOREIGN KEY (`renter_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -75,6 +97,10 @@ BEGIN
 declare msg varchar(255);
 if new.status != 'Pending' AND new.status != 'Completed' AND new.status != 'Canceled' then
 set msg = 'Constraint violated: status must be "Pending" or "Completed" or "Canceled"';
+signal sqlstate '45000' set message_text = msg;
+end if;
+if new.start > new.end then
+set msg = 'Constraint violated: start <= end';
 signal sqlstate '45000' set message_text = msg;
 end if;
 END */;;
@@ -101,9 +127,9 @@ CREATE TABLE `list_comment` (
   PRIMARY KEY (`Cid`),
   KEY `writer_idx` (`comment_writer`),
   KEY `to_list_idx` (`comment_to_list`),
-  CONSTRAINT `comment_writer2` FOREIGN KEY (`comment_writer`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  CONSTRAINT `comment_writer2` FOREIGN KEY (`comment_writer`) REFERENCES `user` (`Uid`) ON DELETE CASCADE,
   CONSTRAINT `list_comment` FOREIGN KEY (`comment_to_list`) REFERENCES `listing` (`Lid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -145,6 +171,7 @@ CREATE TABLE `listing` (
   `postal_code` char(6) NOT NULL,
   `country` varchar(200) NOT NULL,
   `wifi` varchar(3) NOT NULL,
+  `people` int(11) NOT NULL,
   `beds` int(11) NOT NULL,
   `bathrooms` int(11) NOT NULL,
   `kitchens` int(11) NOT NULL,
@@ -155,7 +182,7 @@ CREATE TABLE `listing` (
   PRIMARY KEY (`Lid`),
   UNIQUE KEY `Lid_UNIQUE` (`Lid`),
   KEY `host_id_idx` (`host_id`),
-  CONSTRAINT `host_id` FOREIGN KEY (`host_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION
+  CONSTRAINT `host_id` FOREIGN KEY (`host_id`) REFERENCES `user` (`Uid`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -174,10 +201,25 @@ if new.wifi != 'YES' AND new.wifi != 'NO' then
 set msg = 'Constraint violated: wifi must be "YES" or "NO"';
 signal sqlstate '45000' set message_text = msg;
 end if;
+
 if new.longitude < -180 or new.longitude > 180 or new.latitude < -90 or new.latitude > 90 then
 set msg = 'Constraint violated: invalid Geo-Coordinates';
 signal sqlstate '45000' set message_text = msg;
 end if;
+
+if new.home_type != 'house' AND new.home_type != 'condo' then
+set msg = 'Constraint violated: wifi must be "house" or "apartment"';
+signal sqlstate '45000' set message_text = msg;
+end if;
+if new.beds < 1 or new.kitchens < 0 or new.parking < 0 or new.people < 0 then
+set msg = 'Constraint violated: bed >= 1, kitchen >= 0, parking >= 0, people >= 0';
+signal sqlstate '45000' set message_text = msg;
+end if;
+
+-- IF new.postal_code not like '%[A-Z][0-9][A-Z][0-9][A-Z][0-9]%' then
+-- set msg ='Constraint Violated: must enter valid postal_code';
+--     signal sqlstate '45000' set message_text = msg;
+-- END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -202,9 +244,9 @@ CREATE TABLE `renter_comment` (
   PRIMARY KEY (`Cid`),
   KEY `to_renter_idx` (`comment_to_renter`),
   KEY `comment_writer_idx` (`comment_writer`),
-  CONSTRAINT `comment_to` FOREIGN KEY (`comment_to_renter`) REFERENCES `user` (`Uid`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `comment_to` FOREIGN KEY (`comment_to_renter`) REFERENCES `user` (`Uid`) ON DELETE CASCADE,
   CONSTRAINT `comment_writer` FOREIGN KEY (`comment_writer`) REFERENCES `user` (`Uid`) ON DELETE CASCADE ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -232,7 +274,7 @@ CREATE TABLE `user` (
   `password` varchar(100) NOT NULL,
   PRIMARY KEY (`Uid`),
   UNIQUE KEY `email_UNIQUE` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -246,10 +288,25 @@ DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `mybnb`.`renter_BEFORE_INSERT` BEFORE INSERT ON `user` FOR EACH ROW
 BEGIN
 declare msg varchar(255);
-    IF NEW.birthday > str_to_date('July 21 2001', '%M %d %Y')  then
-		set msg ='Constraint Violated: age must be 18 or older';
-       signal sqlstate '45000' set message_text = msg;
-    END IF;
+IF NEW.birthday > str_to_date('July 21 2001', '%M %d %Y')  then
+	set msg ='Constraint Violated: age must be 18 or older';
+	signal sqlstate '45000' set message_text = msg;
+END IF;
+
+IF length(new.sin) != 9 or length(new.payment) != 16 or length(new.direct_deposit) != 15 then
+	set msg ='Constraint Violated: age must be 18 or older';
+	signal sqlstate '45000' set message_text = msg;
+END IF;
+
+IF new.email not like '%_@__%.__%' then
+	set msg ='Constraint Violated: must enter valid email';
+    signal sqlstate '45000' set message_text = msg;
+END IF;
+
+-- IF new.postal_code not like '%[A-Z][0-9][A-Z][0-9][A-Z][0-9]%' then
+-- set msg ='Constraint Violated: must enter valid postal_code';
+--     signal sqlstate '45000' set message_text = msg;
+-- END IF;
 END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -270,4 +327,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-26 17:05:27
+-- Dump completed on 2019-07-28 22:16:57
